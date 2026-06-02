@@ -7,6 +7,7 @@ import {
   IsUrl,
   Min,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { TournamentFormat, SkillLevel } from '../schemas/tournament.schema';
 
 export class CreateTournamentDto {
@@ -39,6 +40,7 @@ export class CreateTournamentDto {
   @IsOptional()
   description?: string;
 
+  @Transform(({ value }) => value || undefined)
   @IsUrl()
   @IsOptional()
   imageUrl?: string;
