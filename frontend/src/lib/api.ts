@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from '@/hooks/use-toast';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
@@ -31,6 +32,20 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    const data = error.response?.data;
+    const status = error.response?.status;
+    if (status === 401 || status === 403) return Promise.reject(error);
+    const message = Array.isArray(data?.message)
+      ? data.message.join(', ')
+      : (data?.message ?? 'Something went wrong');
+    toast.error(message);
+    return Promise.reject(error);
+  },
+);
+
 export const tournamentApi = {
   getAll: (status?: string) =>
     api.get('/tournaments', { params: status ? { status } : {} }),
@@ -38,6 +53,8 @@ export const tournamentApi = {
   create: (data: unknown) => api.post('/tournaments', data),
   update: (id: string, data: unknown) => api.patch(`/tournaments/${id}`, data),
   delete: (id: string) => api.delete(`/tournaments/${id}`),
+  removeTeam: (id: string, teamId: string) => api.delete(`/tournaments/${id}/teams/${teamId}`),
+  updateStatus: (id: string, status: string) => api.patch(`/tournaments/${id}`, { status }),
 };
 
 export const teamApi = {

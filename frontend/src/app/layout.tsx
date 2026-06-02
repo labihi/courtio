@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
+import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
@@ -32,6 +33,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <body className={`${inter.variable} font-sans`}>
           <NextIntlClientProvider locale={locale} messages={messages}>
             {children}
+            <Toaster />
           </NextIntlClientProvider>
         </body>
       </html>
