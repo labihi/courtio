@@ -45,11 +45,12 @@ export default function AdminTournamentsPage() {
   };
 
   const handleSubmit = async () => {
-    const payload = {
+    const payload: Record<string, unknown> = {
       ...form,
       price: Number(form.price),
       maxTeamSlots: Number(form.maxTeamSlots),
     };
+    if (!payload.imageUrl) delete payload.imageUrl;
     if (editing) {
       await tournamentApi.update(editing._id, payload);
     } else {
@@ -160,7 +161,7 @@ export default function AdminTournamentsPage() {
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className='gap-3 pt-3'>
             <Button variant="outline" onClick={() => setOpen(false)}>{t('cancelBtn')}</Button>
             <Button onClick={handleSubmit}>
               {editing ? t('saveChangesBtn') : t('createBtn')}
