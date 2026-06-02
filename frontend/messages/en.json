@@ -1,0 +1,227 @@
+{
+  "app": {
+    "name": "Courtio",
+    "tagline": "Volleyball Tournament Platform"
+  },
+  "auth": {
+    "signIn": {
+      "tagline": "Volleyball Tournament Platform"
+    },
+    "signUp": {
+      "tagline": "Join the volleyball community"
+    }
+  },
+  "nav": {
+    "discover": "Discover",
+    "roster": "Roster",
+    "market": "Market",
+    "settings": "Settings"
+  },
+  "discover": {
+    "seasonBadge": "Season 2024 Now Open",
+    "heroTitle": "Elevate Your Game",
+    "heroSubtitle": "On The",
+    "heroHighlight": "Sand & Hardwood",
+    "heroDescription": "Discover elite tournaments, track live brackets, and dominate the rankings.",
+    "findTournaments": "Find Tournaments →",
+    "registerTeam": "Register Team",
+    "searchPlaceholder": "Search tournaments...",
+    "upcomingTitle": "Upcoming Tournaments",
+    "filtersBtn": "Filters",
+    "sortByDate": "Sort by: Date",
+    "noTournaments": "No tournaments found."
+  },
+  "roster": {
+    "title": "Roster",
+    "activeSeason": "Active Season: Regional Open 2024",
+    "noTeamTitle": "No Team Yet",
+    "noTeamDescription": "Create your team to start competing in tournaments.",
+    "createTeamBtn": "Create Team",
+    "teamDirectory": "Team Directory",
+    "exportRoster": "Export Roster",
+    "captain": "Captain",
+    "member": "Member",
+    "noRole": "No role",
+    "active": "Active",
+    "addPlayer": "Add Player",
+    "addPlayerTitle": "Add Player",
+    "createTeamTitle": "Create Team",
+    "teamNameLabel": "Team Name",
+    "teamNamePlaceholder": "Spike Squad",
+    "cancelBtn": "Cancel",
+    "createBtn": "Create",
+    "transferCaptainTitle": "Transfer Captaincy",
+    "transferCaptainConfirm": "Are you sure you want to make <bold>{name}</bold> the new captain? You will become a regular member.",
+    "transferCaptainBtn": "Transfer Captaincy",
+    "searchPlayerLabel": "Search Player",
+    "searchPlayerPlaceholder": "Name or email...",
+    "roleOnTeamLabel": "Role on Team",
+    "selectRolePlaceholder": "Select role...",
+    "addPlayerBtn": "Add Player",
+    "makeCaptainTitle": "Make captain",
+    "needMorePlayers": "need {count} more",
+    "playerCount": "{count} player{suffix}"
+  },
+  "profile": {
+    "title": "Profile",
+    "indoor": "Indoor",
+    "eliteDivision": "Elite Division",
+    "captainLabel": "Captain",
+    "playerLabel": "Player",
+    "rolePreferences": "Role Preferences",
+    "rolePreferencesDescription": "Not set",
+    "myTeam": "My Team",
+    "myTeamCount": "{count} team{suffix}",
+    "adminPanel": "Admin Panel",
+    "adminPanelDescription": "Manage tournaments & users"
+  },
+  "roles": {
+    "title": "Role Preferences",
+    "description": "Rank your top preferred positions. This helps captains and scouts find the right fit.",
+    "slotLabels": {
+      "0": "Primary Role",
+      "1": "Secondary Role",
+      "2": "Tertiary Role",
+      "3": "Fourth Role",
+      "4": "Fifth Role"
+    },
+    "optional": "Optional",
+    "selectRolePlaceholder": "Select role...",
+    "noneSelected": "None Selected",
+    "updateBtn": "Update Roster Preferences",
+    "savingBtn": "Saving...",
+    "savedBtn": "✓ Saved!",
+    "livePreviewTitle": "Live Role Preview",
+    "noRoleSelected": "No role selected",
+    "primaryPosition": "Primary Position on Roster"
+  },
+  "market": {
+    "title": "Market",
+    "findSoloPlayers": "Find Solo Players",
+    "description": "Browse players looking to join a team for a tournament.",
+    "selectTournamentPlaceholder": "Select tournament...",
+    "allRoles": "All Roles",
+    "noTournamentSelected": "Select a tournament to browse available players.",
+    "noPlayers": "No players in the want-to-join list for this role.",
+    "inviteBtn": "Invite",
+    "inviteTitle": "Invite {name} to Your Team",
+    "selectTeamPlaceholder": "Select your team..",
+    "cancelBtn": "Cancel",
+    "inviteConfirmBtn": "Invite"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "description": "Manage all aspects of the platform.",
+    "tournaments": {
+      "label": "Tournaments",
+      "description": "Create and manage tournaments"
+    },
+    "teams": {
+      "label": "Teams",
+      "description": "View and manage all teams"
+    },
+    "users": {
+      "label": "Users",
+      "description": "Manage users and roles"
+    }
+  },
+  "adminTeams": {
+    "title": "Teams",
+    "captainLabel": "Captain:",
+    "addPlayerTitle": "Add Player to {teamName}",
+    "searchUserLabel": "Search User",
+    "searchUserPlaceholder": "Name or email...",
+    "roleLabel": "Role",
+    "selectRolePlaceholder": "Select role...",
+    "cancelBtn": "Cancel",
+    "addBtn": "Add",
+    "deleteConfirm": "Delete this team?"
+  },
+  "adminTournaments": {
+    "title": "Tournaments",
+    "newTournamentBtn": "New Tournament",
+    "editTitle": "Edit Tournament",
+    "newTitle": "New Tournament",
+    "nameLabel": "Name",
+    "namePlaceholder": "Pacific Slam Championship",
+    "venueLabel": "Venue",
+    "venuePlaceholder": "Grand Arena, Seattle WA",
+    "priceLabel": "Price ($)",
+    "pricePlaceholder": "120",
+    "dateTimeLabel": "Date & Time",
+    "maxSlotsLabel": "Max Team Slots",
+    "maxSlotsPlaceholder": "32",
+    "imageUrlLabel": "Image URL",
+    "imageUrlPlaceholder": "https://...",
+    "formatLabel": "Format",
+    "skillLevelLabel": "Skill Level",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Tournament overview...",
+    "cancelBtn": "Cancel",
+    "saveChangesBtn": "Save Changes",
+    "createBtn": "Create Tournament",
+    "teamsCount": "{registered}/{max} teams",
+    "deleteConfirm": "Delete this tournament?"
+  },
+  "adminUsers": {
+    "title": "Users",
+    "roleUser": "User",
+    "roleAdmin": "Admin",
+    "deleteConfirm": "Delete this user?"
+  },
+  "tournament": {
+    "formatLabel": "Format",
+    "skillLevelLabel": "Skill Level",
+    "overviewTitle": "Tournament Overview",
+    "feature1": "Official USAV Rules",
+    "feature2": "Custom Team Jerseys Included",
+    "feature3": "MVP Awards",
+    "locationLabel": "Location",
+    "entryFee": "Entry: {price}",
+    "slotsRemaining": "{remaining}/{max} slots remaining",
+    "joinAsTeam": "Join as Team",
+    "joinSolo": "Join Solo",
+    "registrationCloses": "Registration closes August 5th or when full.",
+    "urgentSlots": "URGENT: Only {count} team slot{suffix} left! {registered} teams already registered.",
+    "indoorPro": "Indoor Pro"
+  },
+  "registerDialog": {
+    "registerAsTeamTitle": "Register as Team",
+    "joinSoloTitle": "Join Solo",
+    "tournamentLabel": "Tournament",
+    "selectTeamLabel": "Select Team",
+    "selectTeamPlaceholder": "Choose a team...",
+    "yourRoleLabel": "Your Role",
+    "selectRolePlaceholder": "Select your role...",
+    "cancelBtn": "Cancel",
+    "registeringBtn": "Registering...",
+    "confirmBtn": "Confirm",
+    "successSoloTitle": "You're on the Want to Join list!",
+    "successTeamTitle": "Team registered!",
+    "successSoloDescription": "Captains can now invite you to their team.",
+    "successTeamDescription": "Your team is registered for {tournamentName}",
+    "doneBtn": "Done"
+  },
+  "tacticalView": {
+    "title": "Tactical Roster View",
+    "filledBadge": "{filled}/{total} Filled",
+    "recruitLabel": "Recruit {role}"
+  },
+  "tournamentCard": {
+    "majorChampionship": "Major Championship",
+    "remainingSlots": "Remaining Slots",
+    "teamsCount": "{spots}/{max} Teams",
+    "full": "Full",
+    "registerNow": "Register Now",
+    "perTeam": "{price}/Team",
+    "slotsLeft": "{spots} Slots Left"
+  },
+  "roles_labels": {
+    "OH": "Outside Hitter",
+    "MB": "Middle Blocker",
+    "OPP": "Opposite Hitter",
+    "SET": "Setter",
+    "LIB": "Libero",
+    "DS": "Defensive Specialist"
+  }
+}

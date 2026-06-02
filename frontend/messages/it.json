@@ -1,0 +1,227 @@
+{
+  "app": {
+    "name": "Courtio",
+    "tagline": "Piattaforma Tornei di Pallavolo"
+  },
+  "auth": {
+    "signIn": {
+      "tagline": "Piattaforma Tornei di Pallavolo"
+    },
+    "signUp": {
+      "tagline": "Unisciti alla community di pallavolo"
+    }
+  },
+  "nav": {
+    "discover": "Scopri",
+    "roster": "Rosa",
+    "market": "Mercato",
+    "settings": "Impostazioni"
+  },
+  "discover": {
+    "seasonBadge": "Stagione 2024 Aperta",
+    "heroTitle": "Eleva il Tuo Gioco",
+    "heroSubtitle": "Su",
+    "heroHighlight": "Sabbia e Parquet",
+    "heroDescription": "Scopri tornei d'élite, segui i bracket in diretta e domina le classifiche.",
+    "findTournaments": "Trova Tornei →",
+    "registerTeam": "Registra Squadra",
+    "searchPlaceholder": "Cerca tornei...",
+    "upcomingTitle": "Tornei in Arrivo",
+    "filtersBtn": "Filtri",
+    "sortByDate": "Ordina per: Data",
+    "noTournaments": "Nessun torneo trovato."
+  },
+  "roster": {
+    "title": "Rosa",
+    "activeSeason": "Stagione Attiva: Regional Open 2024",
+    "noTeamTitle": "Nessuna Squadra",
+    "noTeamDescription": "Crea la tua squadra per iniziare a competere nei tornei.",
+    "createTeamBtn": "Crea Squadra",
+    "teamDirectory": "Elenco Squadra",
+    "exportRoster": "Esporta Rosa",
+    "captain": "Capitano",
+    "member": "Membro",
+    "noRole": "Nessun ruolo",
+    "active": "Attivo",
+    "addPlayer": "Aggiungi Giocatore",
+    "addPlayerTitle": "Aggiungi Giocatore",
+    "createTeamTitle": "Crea Squadra",
+    "teamNameLabel": "Nome Squadra",
+    "teamNamePlaceholder": "Spike Squad",
+    "cancelBtn": "Annulla",
+    "createBtn": "Crea",
+    "transferCaptainTitle": "Trasferisci Capitanato",
+    "transferCaptainConfirm": "Sei sicuro di voler rendere <bold>{name}</bold> il nuovo capitano? Diventerai un membro normale.",
+    "transferCaptainBtn": "Trasferisci Capitanato",
+    "searchPlayerLabel": "Cerca Giocatore",
+    "searchPlayerPlaceholder": "Nome o email...",
+    "roleOnTeamLabel": "Ruolo in Squadra",
+    "selectRolePlaceholder": "Seleziona ruolo...",
+    "addPlayerBtn": "Aggiungi Giocatore",
+    "makeCaptainTitle": "Rendi capitano",
+    "needMorePlayers": "servono ancora {count}",
+    "playerCount": "{count} giocator{suffix}"
+  },
+  "profile": {
+    "title": "Profilo",
+    "indoor": "Indoor",
+    "eliteDivision": "Divisione Élite",
+    "captainLabel": "Capitano",
+    "playerLabel": "Giocatore",
+    "rolePreferences": "Preferenze Ruolo",
+    "rolePreferencesDescription": "Non impostato",
+    "myTeam": "La Mia Squadra",
+    "myTeamCount": "{count} squadr{suffix}",
+    "adminPanel": "Pannello Admin",
+    "adminPanelDescription": "Gestisci tornei e utenti"
+  },
+  "roles": {
+    "title": "Preferenze Ruolo",
+    "description": "Classifica le tue posizioni preferite. Aiuta capitani e scout a trovare il profilo giusto.",
+    "slotLabels": {
+      "0": "Ruolo Principale",
+      "1": "Ruolo Secondario",
+      "2": "Ruolo Terziario",
+      "3": "Quarto Ruolo",
+      "4": "Quinto Ruolo"
+    },
+    "optional": "Opzionale",
+    "selectRolePlaceholder": "Seleziona ruolo...",
+    "noneSelected": "Nessuna Selezione",
+    "updateBtn": "Aggiorna Preferenze Rosa",
+    "savingBtn": "Salvataggio...",
+    "savedBtn": "✓ Salvato!",
+    "livePreviewTitle": "Anteprima Ruolo Dal Vivo",
+    "noRoleSelected": "Nessun ruolo selezionato",
+    "primaryPosition": "Posizione Principale in Rosa"
+  },
+  "market": {
+    "title": "Mercato",
+    "findSoloPlayers": "Trova Giocatori Singoli",
+    "description": "Sfoglia i giocatori che cercano una squadra per un torneo.",
+    "selectTournamentPlaceholder": "Seleziona torneo...",
+    "allRoles": "Tutti i Ruoli",
+    "noTournamentSelected": "Seleziona un torneo per sfogliare i giocatori disponibili.",
+    "noPlayers": "Nessun giocatore nella lista vuole-unirsi per questo ruolo.",
+    "inviteBtn": "Invita",
+    "inviteTitle": "Invita {name} nella Tua Squadra",
+    "selectTeamPlaceholder": "Seleziona la tua squadra...",
+    "cancelBtn": "Annulla",
+    "inviteConfirmBtn": "Invita"
+  },
+  "admin": {
+    "title": "Pannello Admin",
+    "description": "Gestisci tutti gli aspetti della piattaforma.",
+    "tournaments": {
+      "label": "Tornei",
+      "description": "Crea e gestisci tornei"
+    },
+    "teams": {
+      "label": "Squadre",
+      "description": "Visualizza e gestisci tutte le squadre"
+    },
+    "users": {
+      "label": "Utenti",
+      "description": "Gestisci utenti e ruoli"
+    }
+  },
+  "adminTeams": {
+    "title": "Squadre",
+    "captainLabel": "Capitano:",
+    "addPlayerTitle": "Aggiungi Giocatore a {teamName}",
+    "searchUserLabel": "Cerca Utente",
+    "searchUserPlaceholder": "Nome o email...",
+    "roleLabel": "Ruolo",
+    "selectRolePlaceholder": "Seleziona ruolo...",
+    "cancelBtn": "Annulla",
+    "addBtn": "Aggiungi",
+    "deleteConfirm": "Eliminare questa squadra?"
+  },
+  "adminTournaments": {
+    "title": "Tornei",
+    "newTournamentBtn": "Nuovo Torneo",
+    "editTitle": "Modifica Torneo",
+    "newTitle": "Nuovo Torneo",
+    "nameLabel": "Nome",
+    "namePlaceholder": "Pacific Slam Championship",
+    "venueLabel": "Sede",
+    "venuePlaceholder": "Grand Arena, Seattle WA",
+    "priceLabel": "Prezzo (€)",
+    "pricePlaceholder": "120",
+    "dateTimeLabel": "Data e Ora",
+    "maxSlotsLabel": "Numero Massimo Squadre",
+    "maxSlotsPlaceholder": "32",
+    "imageUrlLabel": "URL Immagine",
+    "imageUrlPlaceholder": "https://...",
+    "formatLabel": "Formato",
+    "skillLevelLabel": "Livello di Abilità",
+    "descriptionLabel": "Descrizione",
+    "descriptionPlaceholder": "Panoramica del torneo...",
+    "cancelBtn": "Annulla",
+    "saveChangesBtn": "Salva Modifiche",
+    "createBtn": "Crea Torneo",
+    "teamsCount": "{registered}/{max} squadre",
+    "deleteConfirm": "Eliminare questo torneo?"
+  },
+  "adminUsers": {
+    "title": "Utenti",
+    "roleUser": "Utente",
+    "roleAdmin": "Admin",
+    "deleteConfirm": "Eliminare questo utente?"
+  },
+  "tournament": {
+    "formatLabel": "Formato",
+    "skillLevelLabel": "Livello",
+    "overviewTitle": "Panoramica Torneo",
+    "feature1": "Regole USAV Ufficiali",
+    "feature2": "Maglie Personalizzate Incluse",
+    "feature3": "Premi MVP",
+    "locationLabel": "Luogo",
+    "entryFee": "Iscrizione: {price}",
+    "slotsRemaining": "{remaining}/{max} posti rimanenti",
+    "joinAsTeam": "Partecipa come Squadra",
+    "joinSolo": "Partecipa da Solo",
+    "registrationCloses": "Le iscrizioni chiudono il 5 agosto o a esaurimento.",
+    "urgentSlots": "URGENTE: Solo {count} posto{suffix} squadra rimanente! {registered} squadre già iscritte.",
+    "indoorPro": "Indoor Pro"
+  },
+  "registerDialog": {
+    "registerAsTeamTitle": "Registrati come Squadra",
+    "joinSoloTitle": "Partecipa da Solo",
+    "tournamentLabel": "Torneo",
+    "selectTeamLabel": "Seleziona Squadra",
+    "selectTeamPlaceholder": "Scegli una squadra...",
+    "yourRoleLabel": "Il Tuo Ruolo",
+    "selectRolePlaceholder": "Seleziona il tuo ruolo...",
+    "cancelBtn": "Annulla",
+    "registeringBtn": "Registrazione...",
+    "confirmBtn": "Conferma",
+    "successSoloTitle": "Sei nella lista Vuole Unirsi!",
+    "successTeamTitle": "Squadra registrata!",
+    "successSoloDescription": "I capitani possono ora invitarti nella loro squadra.",
+    "successTeamDescription": "La tua squadra è iscritta a {tournamentName}",
+    "doneBtn": "Fatto"
+  },
+  "tacticalView": {
+    "title": "Vista Tattica Rosa",
+    "filledBadge": "{filled}/{total} Occupati",
+    "recruitLabel": "Recluta {role}"
+  },
+  "tournamentCard": {
+    "majorChampionship": "Campionato Maggiore",
+    "remainingSlots": "Posti Rimanenti",
+    "teamsCount": "{spots}/{max} Squadre",
+    "full": "Pieno",
+    "registerNow": "Registrati Ora",
+    "perTeam": "{price}/Squadra",
+    "slotsLeft": "{spots} Posti Rimasti"
+  },
+  "roles_labels": {
+    "OH": "Schiacciatore Laterale",
+    "MB": "Muro Centrale",
+    "OPP": "Opposto",
+    "SET": "Alzatore",
+    "LIB": "Libero",
+    "DS": "Specialista Difensivo"
+  }
+}
