@@ -1,0 +1,169 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import Image from 'next/image';
+import { MapPin, Zap, Share2, Users } from 'lucide-react';
+import { TopBar } from '@/components/layout/top-bar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { RegisterDialog } from '@/components/tournaments/register-dialog';
+import { tournamentApi } from '@/lib/api';
+import { Tournament } from '@/types';
+import { formatDateTime, formatCurrency } from '@/lib/utils';
+
+export default function TournamentDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const [tournament, setTournament] = useState<Tournament | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [registerOpen, setRegisterOpen] = useState(false);
+  const [registerType, setRegisterType] = useState<'team' | 'solo'>('solo');
+
+  useEffect(() => {
+    tournamentApi
+      .getById(id)
+      .then((res) => setTournament(res.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <TopBar showBack backHref="/discover" />
+        <div className="h-48 bg-secondary animate-pulse" />
+        <div className="p-4 space-y-3">
+          <div className="h-8 bg-secondary rounded animate-pulse" />
+          <div className="h-4 bg-secondary rounded animate-pulse w-2/3" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!tournament) return null;
+
+  const spotsLeft = tournament.maxTeamSlots - (tournament.registeredTeams?.length ?? 0);
+  const isFull = tournament.status === 'FULL' || spotsLeft <= 0;
+
+  return (
+    <div className="min-h-screen">
+      <TopBar
+        showBack
+        backHref="/discover"
+        actions={
+          <Button variant="ghost" size="icon">
+            <Share2 className="h-5 w-5" />
+          </Button>
+        }
+      />
+
+      {tournament.imageUrl && (
+        <div className="relative h-52 w-full">
+          <Image src={tournament.imageUrl} alt={tournament.name} fill className="object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+          <div className="absolute top-4 left-4 flex gap-2">
+            <Badge className="bg-primary/90 text-white text-[10px] uppercase tracking-wide">
+              Indoor Pro
+            </Badge>
+            <Badge variant="outline" className="text-white border-white/40 text-[10px]">
+              {formatDateTime(tournament.dateTime).split(',')[0]}
+            </Badge>
+          </div>
+          <div className="absolute bottom-4 left-4 right-4">
+            <h1 className="text-2xl font-bold text-white">{tournament.name}</h1>
+            <div className="flex items-center gap-1 text-white/80 text-sm mt-1">
+              <MapPin className="h-4 w-4" />
+              {tournament.place}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="px-4 py-4 space-y-4">
+        {!isFull && spotsLeft <= 3 && (
+          <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
+            <Zap className="h-4 w-4 text-orange-400 shrink-0" />
+            <p className="text-sm text-orange-300 font-medium">
+              URGENT: Only {spotsLeft} team slot{spotsLeft !== 1 ? 's' : ''} left!{' '}
+              {(tournament.registeredTeams?.length ?? 0)} teams already registered.
+            </p>
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-lg border border-border bg-card p-3">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Format</p>
+            <p className="font-bold text-base">{tournament.format}</p>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-3">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Skill Level</p>
+            <p className="font-bold text-base">{tournament.skillLevel}</p>
+          </div>
+        </div>
+
+        {tournament.description && (
+          <div>
+            <h2 className="font-bold text-lg border-l-4 border-primary pl-3 mb-2">
+              Tournament Overview
+            </h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {tournament.description}
+            </p>
+            <ul className="mt-3 space-y-1.5">
+              {['Official USAV Rules', 'Custom Team Jerseys Included', 'MVP Awards'].map((item) => (
+                <li key={item} className="flex items-center gap-2 text-sm">
+                  <span className="text-primary">✓</span> {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="rounded-lg border border-border bg-card p-3">
+          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+            <MapPin className="h-4 w-4" />
+            <span className="text-xs uppercase tracking-wide">Location</span>
+          </div>
+          <p className="text-sm font-medium text-primary">{tournament.place}</p>
+        </div>
+
+        <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <span>Entry: {formatCurrency(tournament.price)}</span>
+          <span>{spotsLeft}/{tournament.maxTeamSlots} slots remaining</span>
+        </div>
+
+        <div className="space-y-3 pt-2">
+          <Button
+            className="w-full gap-2"
+            size="lg"
+            disabled={isFull}
+            onClick={() => { setRegisterType('team'); setRegisterOpen(true); }}
+          >
+            <Users className="h-5 w-5" />
+            Join as Team
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full"
+            size="lg"
+            onClick={() => { setRegisterType('solo'); setRegisterOpen(true); }}
+          >
+            Join Solo
+          </Button>
+          <p className="text-center text-xs text-muted-foreground">
+            Registration closes August 5th or when full.
+          </p>
+        </div>
+      </div>
+
+      {tournament && (
+        <RegisterDialog
+          tournament={tournament}
+          type={registerType}
+          open={registerOpen}
+          onOpenChange={setRegisterOpen}
+        />
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(brew services *)",
+      "Bash(npm info *)",
+      "Bash(npm install *)",
+      "Bash(node -e \"const p=require\\('./node_modules/next/package.json'\\);console.log\\('next:',p.version\\)\")",
+      "Bash(node -e \"const p=require\\('./node_modules/react/package.json'\\);console.log\\('react:',p.version\\)\")",
+      "Bash(node -e \"const p=require\\('./node_modules/@clerk/nextjs/package.json'\\);console.log\\('@clerk/nextjs:',p.version\\)\")",
+      "Bash(npm run *)",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\"; cat {}')",
+      "Bash(xargs cat)"
+    ]
+  }
+}
