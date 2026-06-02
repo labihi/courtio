@@ -29,8 +29,11 @@ export class RegistrationsService {
   ): Promise<RegistrationDocument> {
     if (!dto.teamId) throw new BadRequestException('teamId required for team registration');
     const team = await this.teamsService.findById(dto.teamId);
-    if (team.captain.toString() !== requesterId) {
+    if ((team.captain as any)._id.toString() !== requesterId) {
       throw new BadRequestException('Only the captain can register the team');
+    }
+    if (team.members.length < 7) {
+      throw new BadRequestException(`Team needs at least 7 players to register (currently ${team.members.length})`);
     }
 
     const existing = await this.regModel.findOne({
