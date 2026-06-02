@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { UserButton } from '@clerk/nextjs';
-import { Search, Menu } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface TopBarProps {
@@ -16,16 +16,12 @@ export function TopBar({ title, showBack, backHref, actions }: TopBarProps) {
   return (
     <header className="sticky top-0 z-40 bg-background/80 backdrop-blur border-b border-border safe-pt">
       <div className="flex items-center gap-3 px-4 h-14">
-        {showBack ? (
+        {showBack && (
           <Link href={backHref || '/'} className="text-muted-foreground hover:text-foreground">
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
-        ) : (
-          <Button variant="ghost" size="icon" className="text-muted-foreground">
-            <Menu className="h-5 w-5" />
-          </Button>
         )}
 
         <span className="flex-1 font-bold text-lg text-primary">
