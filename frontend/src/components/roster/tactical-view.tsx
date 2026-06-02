@@ -1,10 +1,10 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Team, VolleyballRole, STANDARD_ROSTER } from '@/types';
+import { Team, VolleyballRole } from '@/types';
 import { cn } from '@/lib/utils';
-import Link from 'next/link';
 
 interface TacticalViewProps {
   team: Team;
@@ -22,6 +22,7 @@ const COURT_POSITIONS: { role: VolleyballRole; label: string; gridArea: string }
 ];
 
 export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
+  const t = useTranslations('tacticalView');
   const filledCount = team.members.filter((m) => m.status === 'ACTIVE').length;
   const totalSlots = 7;
 
@@ -38,13 +39,13 @@ export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-xs font-bold uppercase tracking-widest text-primary">
-          Tactical Roster View
+          {t('title')}
         </h3>
         <Badge
           variant={filledCount >= totalSlots ? 'success' : 'default'}
           className="text-xs"
         >
-          {filledCount}/{totalSlots} Filled
+          {t('filledBadge', { filled: filledCount, total: totalSlots })}
         </Badge>
       </div>
 
@@ -83,7 +84,7 @@ export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
                     <span className="text-muted-foreground group-hover:text-primary text-lg">+</span>
                   </div>
                   <span className="text-[10px] text-primary font-semibold">
-                    Recruit {pos.label}
+                    {t('recruitLabel', { role: pos.label })}
                   </span>
                 </button>
               )}
