@@ -32,7 +32,17 @@ export class Team {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   captain: Types.ObjectId;
 
-  @Prop({ type: [TeamMember], default: [] })
+  @Prop({
+    type: [
+      {
+        user: { type: Types.ObjectId, ref: 'User', required: true },
+        role: { type: String, enum: Object.values(VolleyballRole) },
+        status: { type: String, enum: Object.values(MemberStatus), default: MemberStatus.ACTIVE },
+        jerseyNumber: { type: Number },
+      },
+    ],
+    default: [],
+  })
   members: TeamMember[];
 
   @Prop()
