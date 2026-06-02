@@ -57,7 +57,7 @@ export default function DiscoverPage() {
         </div>
       </div>
 
-      <div className="px-4 mt-6">
+      <div className="px-4 mt-6 safe-pb">
         <Input
           placeholder="Search tournaments..."
           value={search}
@@ -96,25 +96,6 @@ export default function DiscoverPage() {
           </div>
         )}
 
-        <div className="mt-6 rounded-xl border border-border bg-card p-5">
-          <h3 className="font-bold text-base mb-1">Host Your Own Tournament</h3>
-          <p className="text-sm text-muted-foreground mb-3">
-            Use our professional bracket management, real-time score updates, and automated seeding tools.
-          </p>
-          <ul className="space-y-1 mb-4">
-            {['Automated Player Registrations', 'Live Brackets &amp; Seeding', 'Payment Processing'].map(
-              (item) => (
-                <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="text-primary">✓</span>
-                  <span dangerouslySetInnerHTML={{ __html: item }} />
-                </li>
-              ),
-            )}
-          </ul>
-          <Button variant="outline" className="w-full">Partner with Courtio</Button>
-        </div>
-
-        <div className="h-6" />
       </div>
     </div>
   );

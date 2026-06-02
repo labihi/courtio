@@ -24,7 +24,7 @@ export default function ProfilePage() {
     <div className="min-h-screen">
       <TopBar title="Profile" />
 
-      <div className="px-4 pt-4 space-y-4">
+      <div className="px-4 pt-4 safe-pb space-y-4">
         <div className="flex flex-col items-center py-4">
           <div className="relative">
             <Avatar className="h-20 w-20 ring-2 ring-primary ring-offset-2 ring-offset-background">

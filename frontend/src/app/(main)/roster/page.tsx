@@ -43,7 +43,10 @@ export default function RosterPage() {
 
   useEffect(() => {
     if (searchQuery.length > 1) {
-      userApi.search(searchQuery).then((r) => setSearchResults(r.data));
+      const memberIds = new Set(team?.members.map((m) => m.user._id) ?? []);
+      userApi.search(searchQuery).then((r) =>
+        setSearchResults(r.data.filter((u: User) => !memberIds.has(u._id)))
+      );
     } else {
       setSearchResults([]);
     }
@@ -111,7 +114,7 @@ export default function RosterPage() {
     <div className="min-h-screen">
       <TopBar title={team?.name ?? 'Roster'} />
 
-      <div className="px-4 pt-4 space-y-4">
+      <div className="px-4 pt-4 safe-pb space-y-4">
         {!team ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">🏐</div>
@@ -128,7 +131,7 @@ export default function RosterPage() {
             <div className="flex items-center justify-between">
               <p className="text-xs text-muted-foreground">Active Season: Regional Open 2024</p>
               <Badge variant="outline" className="text-primary border-primary/50 text-xs">
-                {team.members.length}/{7} Filled
+                {team.members.length} player{team.members.length !== 1 ? 's' : ''}{team.members.length < 7 ? ` · need ${7 - team.members.length} more` : ''}
               </Badge>
             </div>
 
