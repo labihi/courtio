@@ -5,3 +5,8 @@ dist/
 .env.local
 *.log
 .DS_Store
+
+# Claude Code
+.claude/
+.agents/
+skills-lock.json
