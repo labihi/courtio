@@ -128,7 +128,7 @@ export function RegisterDialog({ tournament, type, open, onOpenChange }: Registe
               </div>
             </div>
 
-            <DialogFooter>
+            <DialogFooter className="gap-3 pt-3">
               <Button variant="outline" onClick={() => onOpenChange(false)}>{t('cancelBtn')}</Button>
               <Button
                 onClick={handleSubmit}

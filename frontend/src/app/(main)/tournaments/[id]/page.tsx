@@ -88,7 +88,6 @@ export default function TournamentDetailPage() {
             <p className="text-sm text-orange-300 font-medium">
               {t('urgentSlots', {
                 count: spotsLeft,
-                suffix: spotsLeft !== 1 ? 's' : '',
                 registered: tournament.registeredTeams?.length ?? 0,
               })}
             </p>
@@ -114,13 +113,13 @@ export default function TournamentDetailPage() {
             <p className="text-sm text-muted-foreground leading-relaxed">
               {tournament.description}
             </p>
-            <ul className="mt-3 space-y-1.5">
+            {/* <ul className="mt-3 space-y-1.5">
               {([t('feature1'), t('feature2'), t('feature3')] as string[]).map((item) => (
                 <li key={item} className="flex items-center gap-2 text-sm">
                   <span className="text-primary">✓</span> {item}
                 </li>
               ))}
-            </ul>
+            </ul> */}
           </div>
         )}
 

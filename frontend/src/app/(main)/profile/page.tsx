@@ -22,7 +22,6 @@ export default function ProfilePage() {
   }, []);
 
   const teamCount = profile?.teams?.length ?? 0;
-  const teamSuffix = teamCount !== 1 ? 's' : '';
 
   return (
     <div className="min-h-screen">
@@ -85,7 +84,7 @@ export default function ProfilePage() {
               <div>
                 <p className="font-medium text-sm">{t('myTeam')}</p>
                 <p className="text-xs text-muted-foreground">
-                  {teamCount} {t('myTeam').toLowerCase()}{teamSuffix}
+                  {t('myTeamCount', { count: teamCount })}
                 </p>
               </div>
             </div>

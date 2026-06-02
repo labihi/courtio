@@ -60,7 +60,7 @@
     "addPlayerBtn": "Aggiungi Giocatore",
     "makeCaptainTitle": "Rendi capitano",
     "needMorePlayers": "servono ancora {count}",
-    "playerCount": "{count} giocator{suffix}"
+    "playerCount": "{count, plural, one {# giocatore} other {# giocatori}}"
   },
   "profile": {
     "title": "Profilo",
@@ -71,7 +71,7 @@
     "rolePreferences": "Preferenze Ruolo",
     "rolePreferencesDescription": "Non impostato",
     "myTeam": "La Mia Squadra",
-    "myTeamCount": "{count} squadr{suffix}",
+    "myTeamCount": "{count, plural, one {# squadra} other {# squadre}}",
     "adminPanel": "Pannello Admin",
     "adminPanelDescription": "Gestisci tornei e utenti"
   },
@@ -182,7 +182,7 @@
     "joinAsTeam": "Partecipa come Squadra",
     "joinSolo": "Partecipa da Solo",
     "registrationCloses": "Le iscrizioni chiudono il 5 agosto o a esaurimento.",
-    "urgentSlots": "URGENTE: Solo {count} posto{suffix} squadra rimanente! {registered} squadre già iscritte.",
+    "urgentSlots": "{count, plural, one {URGENTE: Solo # posto squadra rimasto! {registered} squadre già iscritte.} other {URGENTE: Solo # posti squadra rimasti! {registered} squadre già iscritte.}}",
     "indoorPro": "Indoor Pro"
   },
   "registerDialog": {

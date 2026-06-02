@@ -60,7 +60,7 @@
     "addPlayerBtn": "Add Player",
     "makeCaptainTitle": "Make captain",
     "needMorePlayers": "need {count} more",
-    "playerCount": "{count} player{suffix}"
+    "playerCount": "{count, plural, one {# player} other {# players}}"
   },
   "profile": {
     "title": "Profile",
@@ -71,7 +71,7 @@
     "rolePreferences": "Role Preferences",
     "rolePreferencesDescription": "Not set",
     "myTeam": "My Team",
-    "myTeamCount": "{count} team{suffix}",
+    "myTeamCount": "{count, plural, one {# team} other {# teams}}",
     "adminPanel": "Admin Panel",
     "adminPanelDescription": "Manage tournaments & users"
   },
@@ -182,7 +182,7 @@
     "joinAsTeam": "Join as Team",
     "joinSolo": "Join Solo",
     "registrationCloses": "Registration closes August 5th or when full.",
-    "urgentSlots": "URGENT: Only {count} team slot{suffix} left! {registered} teams already registered.",
+    "urgentSlots": "{count, plural, one {URGENT: Only # team slot left! {registered} teams already registered.} other {URGENT: Only # team slots left! {registered} teams already registered.}}",
     "indoorPro": "Indoor Pro"
   },
   "registerDialog": {
