@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Trash2, UserPlus } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -14,6 +15,7 @@ import { teamApi, userApi } from '@/lib/api';
 import { Team, VolleyballRole, ROLE_LABELS } from '@/types';
 
 export default function AdminTeamsPage() {
+  const t = useTranslations('adminTeams');
   const [teams, setTeams] = useState<Team[]>([]);
   const [addOpen, setAddOpen] = useState(false);
   const [targetTeam, setTargetTeam] = useState<Team | null>(null);
@@ -38,15 +40,14 @@ export default function AdminTeamsPage() {
   };
 
   const handleDeleteTeam = async (id: string) => {
-    if (!confirm('Delete this team?')) return;
-    // admin bypass — direct delete via API (backend checks admin role)
+    if (!confirm(t('deleteConfirm'))) return;
     await teamApi.delete(id);
     load();
   };
 
   return (
     <div className="min-h-screen">
-      <TopBar title="Teams" showBack backHref="/admin" />
+      <TopBar title={t('title')} showBack backHref="/admin" />
 
       <div className="px-4 pt-4 safe-pb space-y-3">
         {teams.map((team) => (
@@ -55,7 +56,7 @@ export default function AdminTeamsPage() {
               <div>
                 <h3 className="font-semibold">{team.name}</h3>
                 <p className="text-xs text-muted-foreground">
-                  Captain: {team.captain.firstName} {team.captain.lastName}
+                  {t('captainLabel')} {team.captain.firstName} {team.captain.lastName}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -95,13 +96,13 @@ export default function AdminTeamsPage() {
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Player to {targetTeam?.name}</DialogTitle>
+            <DialogTitle>{t('addPlayerTitle', { teamName: targetTeam?.name ?? '' })}</DialogTitle>
           </DialogHeader>
           <div className="space-y-3 py-2">
             <div>
-              <Label>Search User</Label>
+              <Label>{t('searchUserLabel')}</Label>
               <Input
-                className="mt-1" placeholder="Name or email..."
+                className="mt-1" placeholder={t('searchUserPlaceholder')}
                 value={search} onChange={(e) => setSearch(e.target.value)}
               />
               {results.length > 0 && (
@@ -123,9 +124,9 @@ export default function AdminTeamsPage() {
               )}
             </div>
             <div>
-              <Label>Role</Label>
+              <Label>{t('roleLabel')}</Label>
               <Select value={role} onValueChange={(v) => setRole(v as VolleyballRole)}>
-                <SelectTrigger className="mt-1"><SelectValue placeholder="Select role..." /></SelectTrigger>
+                <SelectTrigger className="mt-1"><SelectValue placeholder={t('selectRolePlaceholder')} /></SelectTrigger>
                 <SelectContent>
                   {(Object.entries(ROLE_LABELS) as [VolleyballRole, string][])
                     .filter(([r]) => r !== 'DS')
@@ -136,8 +137,8 @@ export default function AdminTeamsPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setAddOpen(false)}>Cancel</Button>
-            <Button onClick={handleAddMember} disabled={!selectedUser || !role}>Add</Button>
+            <Button variant="outline" onClick={() => setAddOpen(false)}>{t('cancelBtn')}</Button>
+            <Button onClick={handleAddMember} disabled={!selectedUser || !role}>{t('addBtn')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

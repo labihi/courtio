@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { userApi } from '@/lib/api';
 import { User } from '@/types';
 
 export default function AdminUsersPage() {
+  const t = useTranslations('adminUsers');
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,14 +28,14 @@ export default function AdminUsersPage() {
   };
 
   const handleDelete = async (userId: string) => {
-    if (!confirm('Delete this user?')) return;
+    if (!confirm(t('deleteConfirm'))) return;
     await userApi.delete(userId);
     load();
   };
 
   return (
     <div className="min-h-screen">
-      <TopBar title="Users" showBack backHref="/admin" />
+      <TopBar title={t('title')} showBack backHref="/admin" />
 
       <div className="px-4 pt-4 safe-pb space-y-3">
         {loading ? (
@@ -63,8 +64,8 @@ export default function AdminUsersPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="user">User</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="user">{t('roleUser')}</SelectItem>
+                    <SelectItem value="admin">{t('roleAdmin')}</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button

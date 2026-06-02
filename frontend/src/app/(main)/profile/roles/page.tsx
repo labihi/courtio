@@ -2,20 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { userApi } from '@/lib/api';
 import { VolleyballRole, ROLE_LABELS, ROLE_COLORS } from '@/types';
 import { cn } from '@/lib/utils';
-
-const ROLES_WITH_NONE = [
-  { value: '', label: 'None Selected' },
-  ...Object.entries(ROLE_LABELS)
-    .filter(([k]) => k !== 'DS')
-    .map(([value, label]) => ({ value, label: `${label} (${value})` })),
-];
 
 const COURT_ROLE_MAP: Record<VolleyballRole, { x: number; y: number }> = {
   OH: { x: 15, y: 30 },
@@ -27,6 +20,7 @@ const COURT_ROLE_MAP: Record<VolleyballRole, { x: number; y: number }> = {
 };
 
 export default function RolesPage() {
+  const t = useTranslations('roles');
   const [roles, setRoles] = useState<(VolleyballRole | '')[]>(['', '', '', '', '']);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -52,23 +46,30 @@ export default function RolesPage() {
 
   const primaryRole = roles[0] as VolleyballRole | '';
 
-  const SLOT_LABELS = ['Primary Role', 'Secondary Role', 'Tertiary Role', 'Fourth Role', 'Fifth Role'];
+  const SLOT_LABEL_KEYS = ['0', '1', '2', '3', '4'] as const;
   const SLOT_REQUIRED = [true, false, false, false, false];
+
+  const ROLES_WITH_NONE = [
+    { value: '', label: t('noneSelected') },
+    ...Object.entries(ROLE_LABELS)
+      .filter(([k]) => k !== 'DS')
+      .map(([value, label]) => ({ value, label: `${label} (${value})` })),
+  ];
 
   return (
     <div className="min-h-screen">
-      <TopBar title="Role Preferences" showBack backHref="/profile" />
+      <TopBar title={t('title')} showBack backHref="/profile" />
 
       <div className="px-4 pt-4 safe-pb space-y-4">
         <div>
-          <h2 className="text-xl font-bold">Role Preferences</h2>
+          <h2 className="text-xl font-bold">{t('title')}</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Rank your top preferred positions. This helps captains and scouts find the right fit.
+            {t('description')}
           </p>
         </div>
 
         <div className="space-y-3">
-          {SLOT_LABELS.map((label, idx) => (
+          {SLOT_LABEL_KEYS.map((key, idx) => (
             <div
               key={idx}
               className={cn(
@@ -92,13 +93,13 @@ export default function RolesPage() {
                       idx === 0 ? 'text-primary' : 'text-muted-foreground',
                     )}
                   >
-                    {label}
+                    {t(`slotLabels.${key}`)}
                   </span>
                 </div>
                 {SLOT_REQUIRED[idx] ? (
                   <Check className="h-4 w-4 text-primary" />
                 ) : (
-                  <span className="text-xs text-muted-foreground">Optional</span>
+                  <span className="text-xs text-muted-foreground">{t('optional')}</span>
                 )}
               </div>
               <Select
@@ -110,7 +111,7 @@ export default function RolesPage() {
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select role..." />
+                  <SelectValue placeholder={t('selectRolePlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {ROLES_WITH_NONE.map(({ value, label }) => (
@@ -125,12 +126,12 @@ export default function RolesPage() {
         </div>
 
         <Button className="w-full" size="lg" onClick={handleSave} disabled={saving || !roles[0]}>
-          {saved ? '✓ Saved!' : saving ? 'Saving...' : 'Update Roster Preferences'}
+          {saved ? t('savedBtn') : saving ? t('savingBtn') : t('updateBtn')}
         </Button>
 
         <div className="rounded-xl border border-border bg-card p-4">
           <h3 className="text-xs font-bold uppercase tracking-wide text-primary mb-3">
-            Live Role Preview
+            {t('livePreviewTitle')}
           </h3>
           <div className="relative bg-secondary/30 rounded-lg aspect-[4/3] overflow-hidden">
             <div className="absolute inset-0 border-2 border-border/30 rounded-lg" />
@@ -157,9 +158,9 @@ export default function RolesPage() {
           </div>
           <div className="text-center mt-2">
             <p className="font-semibold text-sm">
-              {primaryRole ? ROLE_LABELS[primaryRole] : 'No role selected'}
+              {primaryRole ? ROLE_LABELS[primaryRole] : t('noRoleSelected')}
             </p>
-            <p className="text-xs text-muted-foreground">Primary Position on Roster</p>
+            <p className="text-xs text-muted-foreground">{t('primaryPosition')}</p>
           </div>
         </div>
       </div>

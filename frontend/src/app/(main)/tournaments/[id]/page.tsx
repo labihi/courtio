@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { MapPin, Zap, Share2, Users } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ import { Tournament } from '@/types';
 import { formatDateTime, formatCurrency } from '@/lib/utils';
 
 export default function TournamentDetailPage() {
+  const t = useTranslations('tournament');
   const { id } = useParams<{ id: string }>();
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,7 +65,7 @@ export default function TournamentDetailPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
           <div className="absolute top-4 left-4 flex gap-2">
             <Badge className="bg-primary/90 text-white text-[10px] uppercase tracking-wide">
-              Indoor Pro
+              {t('indoorPro')}
             </Badge>
             <Badge variant="outline" className="text-white border-white/40 text-[10px]">
               {formatDateTime(tournament.dateTime).split(',')[0]}
@@ -84,19 +86,22 @@ export default function TournamentDetailPage() {
           <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
             <Zap className="h-4 w-4 text-orange-400 shrink-0" />
             <p className="text-sm text-orange-300 font-medium">
-              URGENT: Only {spotsLeft} team slot{spotsLeft !== 1 ? 's' : ''} left!{' '}
-              {(tournament.registeredTeams?.length ?? 0)} teams already registered.
+              {t('urgentSlots', {
+                count: spotsLeft,
+                suffix: spotsLeft !== 1 ? 's' : '',
+                registered: tournament.registeredTeams?.length ?? 0,
+              })}
             </p>
           </div>
         )}
 
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-lg border border-border bg-card p-3">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Format</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{t('formatLabel')}</p>
             <p className="font-bold text-base">{tournament.format}</p>
           </div>
           <div className="rounded-lg border border-border bg-card p-3">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Skill Level</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{t('skillLevelLabel')}</p>
             <p className="font-bold text-base">{tournament.skillLevel}</p>
           </div>
         </div>
@@ -104,13 +109,13 @@ export default function TournamentDetailPage() {
         {tournament.description && (
           <div>
             <h2 className="font-bold text-lg border-l-4 border-primary pl-3 mb-2">
-              Tournament Overview
+              {t('overviewTitle')}
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {tournament.description}
             </p>
             <ul className="mt-3 space-y-1.5">
-              {['Official USAV Rules', 'Custom Team Jerseys Included', 'MVP Awards'].map((item) => (
+              {([t('feature1'), t('feature2'), t('feature3')] as string[]).map((item) => (
                 <li key={item} className="flex items-center gap-2 text-sm">
                   <span className="text-primary">✓</span> {item}
                 </li>
@@ -122,14 +127,14 @@ export default function TournamentDetailPage() {
         <div className="rounded-lg border border-border bg-card p-3">
           <div className="flex items-center gap-2 text-muted-foreground mb-1">
             <MapPin className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-wide">Location</span>
+            <span className="text-xs uppercase tracking-wide">{t('locationLabel')}</span>
           </div>
           <p className="text-sm font-medium text-primary">{tournament.place}</p>
         </div>
 
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>Entry: {formatCurrency(tournament.price)}</span>
-          <span>{spotsLeft}/{tournament.maxTeamSlots} slots remaining</span>
+          <span>{t('entryFee', { price: formatCurrency(tournament.price) })}</span>
+          <span>{t('slotsRemaining', { remaining: spotsLeft, max: tournament.maxTeamSlots })}</span>
         </div>
 
         <div className="space-y-3 pt-2">
@@ -140,7 +145,7 @@ export default function TournamentDetailPage() {
             onClick={() => { setRegisterType('team'); setRegisterOpen(true); }}
           >
             <Users className="h-5 w-5" />
-            Join as Team
+            {t('joinAsTeam')}
           </Button>
           <Button
             variant="outline"
@@ -148,10 +153,10 @@ export default function TournamentDetailPage() {
             size="lg"
             onClick={() => { setRegisterType('solo'); setRegisterOpen(true); }}
           >
-            Join Solo
+            {t('joinSolo')}
           </Button>
           <p className="text-center text-xs text-muted-foreground">
-            Registration closes August 5th or when full.
+            {t('registrationCloses')}
           </p>
         </div>
       </div>

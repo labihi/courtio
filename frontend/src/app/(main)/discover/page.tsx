@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
 import { TournamentCard } from '@/components/tournaments/tournament-card';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import { Tournament } from '@/types';
 import Link from 'next/link';
 
 export default function DiscoverPage() {
+  const t = useTranslations('discover');
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -38,41 +40,41 @@ export default function DiscoverPage() {
 
       <div className="px-4 pt-4 pb-2">
         <Badge variant="outline" className="text-primary border-primary/50 text-xs mb-3">
-          Season 2024 Now Open
+          {t('seasonBadge')}
         </Badge>
         <h1 className="text-2xl font-bold leading-tight">
-          Elevate Your Game<br />
-          On The <span className="text-primary">Sand &amp; Hardwood</span>
+          {t('heroTitle')}<br />
+          {t('heroSubtitle')} <span className="text-primary">{t('heroHighlight')}</span>
         </h1>
         <p className="text-muted-foreground text-sm mt-2">
-          Discover elite tournaments, track live brackets, and dominate the rankings.
+          {t('heroDescription')}
         </p>
         <div className="flex gap-3 mt-4">
           <Button className="flex-1" asChild>
-            <Link href="/discover">Find Tournaments →</Link>
+            <Link href="/discover">{t('findTournaments')}</Link>
           </Button>
           <Button variant="outline" className="flex-1" asChild>
-            <Link href="/roster">Register Team</Link>
+            <Link href="/roster">{t('registerTeam')}</Link>
           </Button>
         </div>
       </div>
 
       <div className="px-4 mt-6 safe-pb">
         <Input
-          placeholder="Search tournaments..."
+          placeholder={t('searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="mb-4"
         />
 
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-bold text-lg">Upcoming Tournaments</h2>
+          <h2 className="font-bold text-lg">{t('upcomingTitle')}</h2>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="h-8 gap-1 text-xs">
-              <SlidersHorizontal className="h-3 w-3" /> Filters
+              <SlidersHorizontal className="h-3 w-3" /> {t('filtersBtn')}
             </Button>
             <Button variant="outline" size="sm" className="h-8 gap-1 text-xs">
-              Sort by: Date <ChevronDown className="h-3 w-3" />
+              {t('sortByDate')} <ChevronDown className="h-3 w-3" />
             </Button>
           </div>
         </div>
@@ -85,7 +87,7 @@ export default function DiscoverPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            No tournaments found.
+            {t('noTournaments')}
           </div>
         ) : (
           <div className="space-y-4">

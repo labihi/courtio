@@ -3,16 +3,17 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
+import { useTranslations } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { userApi } from '@/lib/api';
 import { User } from '@/types';
 import { ChevronRight, Trophy, Users, Settings, Shield } from 'lucide-react';
 
 export default function ProfilePage() {
+  const t = useTranslations('profile');
   const { user: clerkUser } = useUser();
   const [profile, setProfile] = useState<User | null>(null);
 
@@ -20,9 +21,12 @@ export default function ProfilePage() {
     userApi.getMe().then((r) => setProfile(r.data)).catch(console.error);
   }, []);
 
+  const teamCount = profile?.teams?.length ?? 0;
+  const teamSuffix = teamCount !== 1 ? 's' : '';
+
   return (
     <div className="min-h-screen">
-      <TopBar title="Profile" />
+      <TopBar title={t('title')} />
 
       <div className="px-4 pt-4 safe-pb space-y-4">
         <div className="flex flex-col items-center py-4">
@@ -42,12 +46,12 @@ export default function ProfilePage() {
               {profile.volleyballRoles[0]
                 ? `${profile.volleyballRoles[0]} • `
                 : ''}
-              {profile.captainOf.length > 0 ? 'Captain' : 'Player'}
+              {profile.captainOf.length > 0 ? t('captainLabel') : t('playerLabel')}
             </p>
           )}
           <div className="flex gap-2 mt-3">
-            <Badge variant="outline">Indoor</Badge>
-            <Badge variant="outline">Elite Division</Badge>
+            <Badge variant="outline">{t('indoor')}</Badge>
+            <Badge variant="outline">{t('eliteDivision')}</Badge>
           </div>
         </div>
 
@@ -61,9 +65,9 @@ export default function ProfilePage() {
                 <Trophy className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="font-medium text-sm">Role Preferences</p>
+                <p className="font-medium text-sm">{t('rolePreferences')}</p>
                 <p className="text-xs text-muted-foreground">
-                  {profile?.volleyballRoles?.slice(0, 2).join(', ') || 'Not set'}
+                  {profile?.volleyballRoles?.slice(0, 2).join(', ') || t('rolePreferencesDescription')}
                 </p>
               </div>
             </div>
@@ -79,9 +83,9 @@ export default function ProfilePage() {
                 <Users className="h-5 w-5 text-blue-400" />
               </div>
               <div>
-                <p className="font-medium text-sm">My Team</p>
+                <p className="font-medium text-sm">{t('myTeam')}</p>
                 <p className="text-xs text-muted-foreground">
-                  {profile?.teams?.length ?? 0} team{profile?.teams?.length !== 1 ? 's' : ''}
+                  {teamCount} {t('myTeam').toLowerCase()}{teamSuffix}
                 </p>
               </div>
             </div>
@@ -98,8 +102,8 @@ export default function ProfilePage() {
                   <Shield className="h-5 w-5 text-orange-400" />
                 </div>
                 <div>
-                  <p className="font-medium text-sm">Admin Panel</p>
-                  <p className="text-xs text-muted-foreground">Manage tournaments &amp; users</p>
+                  <p className="font-medium text-sm">{t('adminPanel')}</p>
+                  <p className="text-xs text-muted-foreground">{t('adminPanelDescription')}</p>
                 </div>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground" />

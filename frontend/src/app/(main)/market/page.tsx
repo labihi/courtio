@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +13,7 @@ import { Tournament, Registration, Team, VolleyballRole, ROLE_LABELS, ROLE_COLOR
 import { cn } from '@/lib/utils';
 
 export default function MarketPage() {
+  const t = useTranslations('market');
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [selectedTournament, setSelectedTournament] = useState('');
   const [players, setPlayers] = useState<Registration[]>([]);
@@ -53,23 +55,23 @@ export default function MarketPage() {
 
   return (
     <div className="min-h-screen">
-      <TopBar title="Market" />
+      <TopBar title={t('title')} />
 
       <div className="px-4 pt-4 safe-pb space-y-4">
         <div>
-          <p className="text-sm text-muted-foreground mb-1">Find Solo Players</p>
+          <p className="text-sm text-muted-foreground mb-1">{t('findSoloPlayers')}</p>
           <p className="text-xs text-muted-foreground">
-            Browse players looking to join a team for a tournament.
+            {t('description')}
           </p>
         </div>
 
         <Select value={selectedTournament} onValueChange={setSelectedTournament}>
           <SelectTrigger>
-            <SelectValue placeholder="Select tournament..." />
+            <SelectValue placeholder={t('selectTournamentPlaceholder')} />
           </SelectTrigger>
           <SelectContent>
-            {tournaments.map((t) => (
-              <SelectItem key={t._id} value={t._id}>{t.name}</SelectItem>
+            {tournaments.map((tournament) => (
+              <SelectItem key={tournament._id} value={tournament._id}>{tournament.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -87,7 +89,7 @@ export default function MarketPage() {
                     : 'border-border text-muted-foreground',
                 )}
               >
-                {r === 'all' ? 'All Roles' : ROLE_LABELS[r as VolleyballRole]}
+                {r === 'all' ? t('allRoles') : ROLE_LABELS[r as VolleyballRole]}
               </button>
             ))}
           </div>
@@ -101,11 +103,11 @@ export default function MarketPage() {
           </div>
         ) : !selectedTournament ? (
           <div className="text-center py-12 text-muted-foreground text-sm">
-            Select a tournament to browse available players.
+            {t('noTournamentSelected')}
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground text-sm">
-            No players in the want-to-join list for this role.
+            {t('noPlayers')}
           </div>
         ) : (
           <div className="space-y-3">
@@ -154,7 +156,7 @@ export default function MarketPage() {
                     setInviteOpen(true);
                   }}
                 >
-                  Invite
+                  {t('inviteBtn')}
                 </Button>
               </div>
             ))}
@@ -166,24 +168,24 @@ export default function MarketPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Invite {selectedPlayer?.player?.firstName} to Your Team
+              {t('inviteTitle', { name: selectedPlayer?.player?.firstName ?? '' })}
             </DialogTitle>
           </DialogHeader>
           <div className="py-2">
             <Select value={selectedTeam} onValueChange={setSelectedTeam}>
               <SelectTrigger>
-                <SelectValue placeholder="Select your team..." />
+                <SelectValue placeholder={t('selectTeamPlaceholder')} />
               </SelectTrigger>
               <SelectContent>
-                {myTeams.map((t) => (
-                  <SelectItem key={t._id} value={t._id}>{t.name}</SelectItem>
+                {myTeams.map((team) => (
+                  <SelectItem key={team._id} value={team._id}>{team.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setInviteOpen(false)}>Cancel</Button>
-            <Button onClick={handleInvite} disabled={!selectedTeam}>Invite</Button>
+            <Button variant="outline" onClick={() => setInviteOpen(false)}>{t('cancelBtn')}</Button>
+            <Button onClick={handleInvite} disabled={!selectedTeam}>{t('inviteConfirmBtn')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

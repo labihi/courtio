@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Plus, Download, UserPlus, Crown } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
 import { TacticalView } from '@/components/roster/tactical-view';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ import { Team, User, VolleyballRole, ROLE_LABELS } from '@/types';
 const ROLES = Object.entries(ROLE_LABELS) as [VolleyballRole, string][];
 
 export default function RosterPage() {
+  const t = useTranslations('roster');
   const [team, setTeam] = useState<Team | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -102,7 +104,7 @@ export default function RosterPage() {
   if (loading) {
     return (
       <div className="min-h-screen">
-        <TopBar title="Roster" />
+        <TopBar title={t('title')} />
         <div className="p-4 space-y-3">
           {[1, 2, 3].map((i) => <div key={i} className="h-24 bg-secondary rounded-xl animate-pulse" />)}
         </div>
@@ -110,28 +112,33 @@ export default function RosterPage() {
     );
   }
 
+  const memberCount = team?.members.length ?? 0;
+  const playerBadge = memberCount < 7
+    ? `${memberCount} · ${t('needMorePlayers', { count: 7 - memberCount })}`
+    : `${memberCount}`;
+
   return (
     <div className="min-h-screen">
-      <TopBar title={team?.name ?? 'Roster'} />
+      <TopBar title={team?.name ?? t('title')} />
 
       <div className="px-4 pt-4 safe-pb space-y-4">
         {!team ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">🏐</div>
-            <h2 className="text-xl font-bold mb-2">No Team Yet</h2>
+            <h2 className="text-xl font-bold mb-2">{t('noTeamTitle')}</h2>
             <p className="text-muted-foreground text-sm mb-6">
-              Create your team to start competing in tournaments.
+              {t('noTeamDescription')}
             </p>
             <Button onClick={() => setCreateOpen(true)} className="gap-2">
-              <Plus className="h-4 w-4" /> Create Team
+              <Plus className="h-4 w-4" /> {t('createTeamBtn')}
             </Button>
           </div>
         ) : (
           <>
             <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">Active Season: Regional Open 2024</p>
+              <p className="text-xs text-muted-foreground">{t('activeSeason')}</p>
               <Badge variant="outline" className="text-primary border-primary/50 text-xs">
-                {team.members.length} player{team.members.length !== 1 ? 's' : ''}{team.members.length < 7 ? ` · need ${7 - team.members.length} more` : ''}
+                {playerBadge}
               </Badge>
             </div>
 
@@ -140,9 +147,9 @@ export default function RosterPage() {
             {/* Team Directory */}
             <div className="rounded-xl border border-border bg-card overflow-hidden">
               <div className="flex items-center justify-between p-4 border-b border-border">
-                <h3 className="font-bold">Team Directory</h3>
+                <h3 className="font-bold">{t('teamDirectory')}</h3>
                 <Button size="sm" variant="outline" className="gap-1 text-xs h-8">
-                  <Download className="h-3 w-3" /> Export Roster
+                  <Download className="h-3 w-3" /> {t('exportRoster')}
                 </Button>
               </div>
 
@@ -166,7 +173,7 @@ export default function RosterPage() {
                         </p>
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                           {memberIsCaptain && <Crown className="h-3 w-3 text-yellow-400" />}
-                          {memberIsCaptain ? 'Captain' : 'Member'}
+                          {memberIsCaptain ? t('captain') : t('member')}
                         </p>
                       </div>
 
@@ -178,11 +185,11 @@ export default function RosterPage() {
                             onValueChange={(v) => handleUpdateRole(member.user._id, v)}
                           >
                             <SelectTrigger className="h-7 text-xs w-32 border-dashed">
-                              <SelectValue placeholder="No role" />
+                              <SelectValue placeholder={t('noRole')} />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="none">
-                                <span className="text-muted-foreground">No role</span>
+                                <span className="text-muted-foreground">{t('noRole')}</span>
                               </SelectItem>
                               {ROLES.map(([v, l]) => (
                                 <SelectItem key={v} value={v}>{l}</SelectItem>
@@ -196,13 +203,13 @@ export default function RosterPage() {
                         )}
                       </div>
 
-                      <Badge variant="success" className="text-[10px] shrink-0">Active</Badge>
+                      <Badge variant="success" className="text-[10px] shrink-0">{t('active')}</Badge>
 
                       {/* Captain actions on non-captain members */}
                       {isCaptain && !memberIsCaptain && (
                         <div className="flex items-center gap-1 shrink-0">
                           <button
-                            title="Make captain"
+                            title={t('makeCaptainTitle')}
                             onClick={() => {
                               setTransferTargetId(member.user._id);
                               setTransferTargetName(`${member.user.firstName} ${member.user.lastName}`);
@@ -228,7 +235,7 @@ export default function RosterPage() {
               {isCaptain && (
                 <div className="p-4">
                   <Button variant="outline" className="w-full gap-2" onClick={() => setAddMemberOpen(true)}>
-                    <UserPlus className="h-4 w-4" /> Add Player
+                    <UserPlus className="h-4 w-4" /> {t('addPlayer')}
                   </Button>
                 </div>
               )}
@@ -240,21 +247,21 @@ export default function RosterPage() {
       {/* Create Team Dialog */}
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Create Team</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>{t('createTeamTitle')}</DialogTitle></DialogHeader>
           <div className="space-y-3 py-2">
             <div>
-              <Label>Team Name</Label>
+              <Label>{t('teamNameLabel')}</Label>
               <Input
                 className="mt-1"
-                placeholder="Spike Squad"
+                placeholder={t('teamNamePlaceholder')}
                 value={teamName}
                 onChange={(e) => setTeamName(e.target.value)}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreateTeam}>Create</Button>
+            <Button variant="outline" onClick={() => setCreateOpen(false)}>{t('cancelBtn')}</Button>
+            <Button onClick={handleCreateTeam}>{t('createBtn')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -263,14 +270,18 @@ export default function RosterPage() {
       <Dialog open={addMemberOpen} onOpenChange={setAddMemberOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Player{recruitRole ? ` – ${ROLE_LABELS[recruitRole]}` : ''}</DialogTitle>
+            <DialogTitle>
+              {recruitRole
+                ? `${t('addPlayerTitle')} – ${ROLE_LABELS[recruitRole]}`
+                : t('addPlayerTitle')}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div>
-              <Label>Search Player</Label>
+              <Label>{t('searchPlayerLabel')}</Label>
               <Input
                 className="mt-1"
-                placeholder="Name or email..."
+                placeholder={t('searchPlayerPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -300,10 +311,10 @@ export default function RosterPage() {
               )}
             </div>
             <div>
-              <Label>Role on Team</Label>
+              <Label>{t('roleOnTeamLabel')}</Label>
               <Select value={selectedRole} onValueChange={(v) => setSelectedRole(v as VolleyballRole)}>
                 <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select role..." />
+                  <SelectValue placeholder={t('selectRolePlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {ROLES.filter(([r]) => r !== 'DS').map(([v, l]) => (
@@ -314,9 +325,9 @@ export default function RosterPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => { setAddMemberOpen(false); setRecruitRole(null); }}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setAddMemberOpen(false); setRecruitRole(null); }}>{t('cancelBtn')}</Button>
             <Button onClick={handleAddMember} disabled={!selectedUserId || !selectedRole}>
-              Add Player
+              {t('addPlayerBtn')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -326,16 +337,18 @@ export default function RosterPage() {
       <Dialog open={transferOpen} onOpenChange={setTransferOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Transfer Captaincy</DialogTitle>
+            <DialogTitle>{t('transferCaptainTitle')}</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground py-2">
-            Are you sure you want to make <span className="font-semibold text-foreground">{transferTargetName}</span> the new captain?
-            You will become a regular member.
+            {t.rich('transferCaptainConfirm', {
+              name: transferTargetName,
+              bold: (chunks) => <span className="font-semibold text-foreground">{chunks}</span>,
+            })}
           </p>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setTransferOpen(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setTransferOpen(false)}>{t('cancelBtn')}</Button>
             <Button variant="destructive" onClick={handleTransferCaptain}>
-              Transfer Captaincy
+              {t('transferCaptainBtn')}
             </Button>
           </DialogFooter>
         </DialogContent>
