@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
@@ -93,13 +94,13 @@ export default function AdminTournamentsPage() {
         {tournaments.map((tournament) => (
           <div key={tournament._id} className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-start justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold truncate">{tournament.name}</h3>
+              <Link href={`/admin/tournaments/${tournament._id}`} className="flex-1 min-w-0 min-w-0">
+                <h3 className="font-semibold truncate hover:text-primary transition-colors">{tournament.name}</h3>
                 <p className="text-xs text-muted-foreground">{tournament.place} · {formatDate(tournament.dateTime)}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {formatCurrency(tournament.price)} · {t('teamsCount', { registered: tournament.registeredTeams?.length ?? 0, max: tournament.maxTeamSlots })}
                 </p>
-              </div>
+              </Link>
               <div className="flex gap-2 shrink-0">
                 <Badge variant={tournament.status === 'OPEN' ? 'success' : 'secondary'} className="text-[10px]">
                   {tournament.status}

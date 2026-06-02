@@ -49,6 +49,12 @@ export class TournamentsController {
     return this.tournamentsService.update(id, dto);
   }
 
+  @Delete(':id/teams/:teamId')
+  @Roles('admin')
+  removeTeam(@Param('id') id: string, @Param('teamId') teamId: string) {
+    return this.tournamentsService.removeTeam(id, teamId);
+  }
+
   @Delete(':id')
   @Roles('admin')
   remove(@Param('id') id: string) {
