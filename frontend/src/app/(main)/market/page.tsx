@@ -55,7 +55,7 @@ export default function MarketPage() {
     <div className="min-h-screen">
       <TopBar title="Market" />
 
-      <div className="px-4 pt-4 space-y-4">
+      <div className="px-4 pt-4 safe-pb space-y-4">
         <div>
           <p className="text-sm text-muted-foreground mb-1">Find Solo Players</p>
           <p className="text-xs text-muted-foreground">

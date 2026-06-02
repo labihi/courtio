@@ -35,7 +35,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen">
       <TopBar title="Admin Panel" />
-      <div className="px-4 pt-4 space-y-3">
+      <div className="px-4 pt-4 safe-pb space-y-3">
         <p className="text-sm text-muted-foreground">Manage all aspects of the platform.</p>
         {sections.map(({ href, icon: Icon, label, description, color, bg }) => (
           <Link key={href} href={href} className="block">

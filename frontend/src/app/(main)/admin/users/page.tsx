@@ -36,7 +36,7 @@ export default function AdminUsersPage() {
     <div className="min-h-screen">
       <TopBar title="Users" showBack backHref="/admin" />
 
-      <div className="px-4 pt-4 space-y-3">
+      <div className="px-4 pt-4 safe-pb space-y-3">
         {loading ? (
           [1, 2, 3].map((i) => (
             <div key={i} className="h-16 bg-secondary rounded-xl animate-pulse" />

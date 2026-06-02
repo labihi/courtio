@@ -79,7 +79,7 @@ export default function TournamentDetailPage() {
         </div>
       )}
 
-      <div className="px-4 py-4 space-y-4">
+      <div className="px-4 py-4 safe-pb space-y-4">
         {!isFull && spotsLeft <= 3 && (
           <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
             <Zap className="h-4 w-4 text-orange-400 shrink-0" />

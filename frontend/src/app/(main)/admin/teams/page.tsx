@@ -48,7 +48,7 @@ export default function AdminTeamsPage() {
     <div className="min-h-screen">
       <TopBar title="Teams" showBack backHref="/admin" />
 
-      <div className="px-4 pt-4 space-y-3">
+      <div className="px-4 pt-4 safe-pb space-y-3">
         {teams.map((team) => (
           <div key={team._id} className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center justify-between mb-3">

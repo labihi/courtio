@@ -59,7 +59,7 @@ export default function RolesPage() {
     <div className="min-h-screen">
       <TopBar title="Role Preferences" showBack backHref="/profile" />
 
-      <div className="px-4 pt-4 space-y-4">
+      <div className="px-4 pt-4 safe-pb space-y-4">
         <div>
           <h2 className="text-xl font-bold">Role Preferences</h2>
           <p className="text-sm text-muted-foreground mt-1">

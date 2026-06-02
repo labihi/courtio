@@ -73,7 +73,7 @@ export default function AdminTournamentsPage() {
     <div className="min-h-screen">
       <TopBar title="Tournaments" showBack backHref="/admin" />
 
-      <div className="px-4 pt-4 space-y-3">
+      <div className="px-4 pt-4 safe-pb space-y-3">
         <Button className="w-full gap-2" onClick={openCreate}>
           <Plus className="h-4 w-4" /> New Tournament
         </Button>
