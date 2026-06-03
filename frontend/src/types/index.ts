@@ -51,10 +51,16 @@ export interface Team {
   updatedAt: string;
 }
 
+export interface TournamentPlace {
+  placeName: string;
+  placeAddress: string;
+  placeUrl?: string;
+}
+
 export interface Tournament {
   _id: string;
   name: string;
-  place: string;
+  place: TournamentPlace;
   price: number;
   dateTime: string;
   maxTeamSlots: number;
@@ -62,6 +68,7 @@ export interface Tournament {
   skillLevel: string;
   description?: string;
   imageUrl?: string;
+  registrationCloseDateTime?: string;
   status: 'UPCOMING' | 'OPEN' | 'FULL' | 'ONGOING' | 'COMPLETED' | 'CANCELLED';
   organizers: User[];
   registeredTeams: Team[];

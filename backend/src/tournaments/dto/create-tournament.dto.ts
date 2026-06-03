@@ -6,16 +6,30 @@ import {
   IsEnum,
   IsUrl,
   Min,
+  ValidateNested,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { TournamentFormat, SkillLevel } from '../schemas/tournament.schema';
+
+export class PlaceDto {
+  @IsString()
+  placeName: string;
+
+  @IsString()
+  placeAddress: string;
+
+  @IsUrl()
+  @IsOptional()
+  placeUrl?: string;
+}
 
 export class CreateTournamentDto {
   @IsString()
   name: string;
 
-  @IsString()
-  place: string;
+  @ValidateNested()
+  @Type(() => PlaceDto)
+  place: PlaceDto;
 
   @IsNumber()
   @Min(0)
@@ -23,6 +37,10 @@ export class CreateTournamentDto {
 
   @IsDateString()
   dateTime: string;
+
+  @IsDateString()
+  @IsOptional()
+  registrationCloseDateTime?: string;
 
   @IsNumber()
   @Min(2)

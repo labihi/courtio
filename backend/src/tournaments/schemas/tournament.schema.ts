@@ -1,6 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
+@Schema({ _id: false })
+class Place {
+  @Prop({ required: true })
+  placeName: string;
+
+  @Prop({ required: true })
+  placeAddress: string;
+
+  @Prop()
+  placeUrl?: string;
+}
+
 export type TournamentDocument = Tournament & Document;
 
 export enum TournamentStatus {
@@ -33,14 +45,17 @@ export class Tournament {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true })
-  place: string;
+  @Prop({ required: true, type: Place })
+  place: Place;
 
   @Prop({ required: true })
   price: number;
 
   @Prop({ required: true })
   dateTime: Date;
+
+  @Prop()
+  registrationCloseDateTime?: Date;
 
   @Prop({ required: true })
   maxTeamSlots: number;
