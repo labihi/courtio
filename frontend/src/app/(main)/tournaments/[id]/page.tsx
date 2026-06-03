@@ -3,18 +3,19 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { MapPin, Zap, Share2, Users } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { MapPin, Calendar, Zap, Share2, Users } from 'lucide-react';
+import { useTranslations, useLocale } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { RegisterDialog } from '@/components/tournaments/register-dialog';
+import { MapView } from '@/components/tournaments/map-view';
 import { tournamentApi } from '@/lib/api';
 import { Tournament } from '@/types';
 import { formatDateTime, formatCurrency } from '@/lib/utils';
 
 export default function TournamentDetailPage() {
   const t = useTranslations('tournament');
+  const locale = useLocale();
   const { id } = useParams<{ id: string }>();
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,25 +64,17 @@ export default function TournamentDetailPage() {
         <div className="relative h-52 w-full">
           <Image src={tournament.imageUrl} alt={tournament.name} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-          <div className="absolute top-4 left-4 flex gap-2">
-            <Badge className="bg-primary/90 text-white text-[10px] uppercase tracking-wide">
-              {t('indoorPro')}
-            </Badge>
-            <Badge variant="outline" className="text-white border-white/40 text-[10px]">
-              {formatDateTime(tournament.dateTime).split(',')[0]}
-            </Badge>
-          </div>
-          <div className="absolute bottom-4 left-4 right-4">
-            <h1 className="text-2xl font-bold text-white">{tournament.name}</h1>
-            <div className="flex items-center gap-1 text-white/80 text-sm mt-1">
-              <MapPin className="h-4 w-4" />
-              {tournament.place}
-            </div>
-          </div>
         </div>
       )}
 
       <div className="px-4 py-4 safe-pb space-y-4">
+        <div>
+          <h1 className="text-2xl font-bold">{tournament.name}</h1>
+          <div className="flex items-center gap-1 text-muted-foreground text-sm mt-1">
+            <Calendar className="h-4 w-4" />
+            {formatDateTime(tournament.dateTime, locale)}
+          </div>
+        </div>
         {!isFull && spotsLeft <= 3 && (
           <div className="flex items-center gap-2 bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
             <Zap className="h-4 w-4 text-orange-400 shrink-0" />
@@ -128,11 +121,28 @@ export default function TournamentDetailPage() {
             <MapPin className="h-4 w-4" />
             <span className="text-xs uppercase tracking-wide">{t('locationLabel')}</span>
           </div>
-          <p className="text-sm font-medium text-primary">{tournament.place}</p>
+          {tournament.place.placeUrl ? (
+            <a
+              href={tournament.place.placeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              {tournament.place.placeName}
+            </a>
+          ) : (
+            <p className="text-sm font-medium text-primary">{tournament.place.placeName}</p>
+          )}
+          <p className="text-xs text-muted-foreground mt-0.5 mb-3">{tournament.place.placeAddress}</p>
+          <MapView
+            placeName={tournament.place.placeName}
+            placeAddress={tournament.place.placeAddress}
+            placeUrl={tournament.place.placeUrl}
+          />
         </div>
 
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>{t('entryFee', { price: formatCurrency(tournament.price) })}</span>
+          <span>{t('entryFee', { price: formatCurrency(tournament.price, locale) })}</span>
           <span>{t('slotsRemaining', { remaining: spotsLeft, max: tournament.maxTeamSlots })}</span>
         </div>
 
@@ -155,7 +165,9 @@ export default function TournamentDetailPage() {
             {t('joinSolo')}
           </Button>
           <p className="text-center text-xs text-muted-foreground">
-            {t('registrationCloses')}
+            {tournament.registrationCloseDateTime
+              ? t('registrationCloses', { date: formatDateTime(tournament.registrationCloseDateTime, locale) })
+              : t('registrationClosesFull')}
           </p>
         </div>
       </div>
