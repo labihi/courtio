@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Calendar, Users } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tournament } from '@/types';
@@ -25,6 +25,7 @@ const STATUS_VARIANTS = {
 
 export function TournamentCard({ tournament, variant = 'compact' }: TournamentCardProps) {
   const t = useTranslations('tournamentCard');
+  const locale = useLocale();
   const spotsLeft = tournament.maxTeamSlots - (tournament.registeredTeams?.length ?? 0);
 
   if (variant === 'featured') {
@@ -45,29 +46,41 @@ export function TournamentCard({ tournament, variant = 'compact' }: TournamentCa
                   {t('majorChampionship')}
                 </Badge>
               </div>
-              <div className="absolute bottom-3 left-3 right-3">
-                <h3 className="text-xl font-bold text-white">{tournament.name}</h3>
-                <div className="flex items-center gap-1 text-white/80 text-sm mt-1">
-                  <MapPin className="h-3.5 w-3.5" />
-                  {tournament.place}
-                </div>
-                <div className="flex items-center gap-1 text-white/80 text-sm">
-                  <Calendar className="h-3.5 w-3.5" />
-                  {formatDate(tournament.dateTime)}
-                </div>
-              </div>
             </div>
           )}
-          <div className="p-4 flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('remainingSlots')}</p>
-              <p className="text-sm font-semibold">
-                {t('teamsCount', { spots: spotsLeft, max: tournament.maxTeamSlots })}
-              </p>
+          <div className="p-4">
+            <div className="flex items-start justify-between gap-2 mb-1">
+              <h3 className="text-xl font-bold">{tournament.name}</h3>
+              <Badge variant={STATUS_VARIANTS[tournament.status] ?? 'secondary'} className="shrink-0 mt-0.5">
+                {t(`status.${tournament.status}`)}
+              </Badge>
             </div>
-            <Button size="sm" disabled={tournament.status === 'FULL'}>
-              {tournament.status === 'FULL' ? t('full') : t('registerNow')}
-            </Button>
+            <div className="flex items-center gap-1 text-muted-foreground text-sm mt-1">
+              <MapPin className="h-3.5 w-3.5" />
+              {tournament.place.placeName}
+            </div>
+            <div className="flex items-center gap-1 text-muted-foreground text-sm">
+              <Calendar className="h-3.5 w-3.5" />
+              {formatDate(tournament.dateTime, locale)}
+            </div>
+            <div className="mt-3 flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">{t('remainingSlots')}</p>
+                <p className="text-sm font-semibold">
+                  {t('teamsCount', { spots: spotsLeft, max: tournament.maxTeamSlots })}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-medium">
+                  {tournament.price > 0
+                    ? t('entryFee', { price: formatCurrency(tournament.price, locale) })
+                    : t('free')}
+                </p>
+                <Button size="sm" className="mt-1" disabled={tournament.status === 'FULL'}>
+                  {tournament.status === 'FULL' ? t('full') : t('registerNow')}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </Link>
@@ -86,30 +99,32 @@ export function TournamentCard({ tournament, variant = 'compact' }: TournamentCa
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            {tournament.price > 0 && (
-              <Badge className="absolute top-3 right-3 bg-black/60 text-white border-none">
-                {t('perTeam', { price: formatCurrency(tournament.price) })}
-              </Badge>
-            )}
           </div>
         )}
         <div className="p-4">
           <h3 className="font-bold text-base">{tournament.name}</h3>
           <div className="flex items-center gap-1 text-muted-foreground text-sm mt-1">
             <MapPin className="h-3.5 w-3.5" />
-            {tournament.place}
+            {tournament.place.placeName}
           </div>
           <div className="flex items-center gap-1 text-muted-foreground text-sm">
             <Calendar className="h-3.5 w-3.5" />
-            {formatDate(tournament.dateTime)}
+            {formatDate(tournament.dateTime, locale)}
           </div>
           <div className="mt-3 flex items-center justify-between">
-            <Badge variant={STATUS_VARIANTS[tournament.status] ?? 'secondary'}>
-              {tournament.status === 'OPEN' && spotsLeft > 0
-                ? t('slotsLeft', { spots: spotsLeft })
-                : tournament.status}
-            </Badge>
-            <span className="text-xs text-muted-foreground">{tournament.format}</span>
+            <div className="flex items-center gap-2">
+              <Badge variant={STATUS_VARIANTS[tournament.status] ?? 'secondary'}>
+                {t(`status.${tournament.status}`)}
+              </Badge>
+              {tournament.status === 'OPEN' && spotsLeft > 0 && (
+                <span className="text-xs text-muted-foreground">{t('slotsLeft', { spots: spotsLeft })}</span>
+              )}
+            </div>
+            <span className="text-sm font-medium">
+              {tournament.price > 0
+                ? t('entryFee', { price: formatCurrency(tournament.price, locale) })
+                : t('free')}
+            </span>
           </div>
         </div>
       </div>
