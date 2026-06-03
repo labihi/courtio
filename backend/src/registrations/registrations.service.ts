@@ -14,6 +14,28 @@ import {
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { TournamentsService } from '../tournaments/tournaments.service';
 import { TeamsService } from '../teams/teams.service';
+import { UsersService } from '../users/users.service';
+import { TournamentFormat } from '../tournaments/schemas/tournament.schema';
+
+const FORMAT_MIN_ROSTER: Record<TournamentFormat, number> = {
+  [TournamentFormat.SIX_V_SIX]: 6,
+  [TournamentFormat.FOUR_V_FOUR]: 4,
+  [TournamentFormat.TWO_V_TWO]: 2,
+};
+
+export interface MarketPlayer {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  avatar?: string;
+  volleyballRoles: string[];
+  hasTeam: boolean;
+  soloRegistration?: {
+    _id: string;
+    tournament: { _id: string; name: string };
+    role: string;
+  } | null;
+}
 
 @Injectable()
 export class RegistrationsService {
@@ -21,6 +43,7 @@ export class RegistrationsService {
     @InjectModel(Registration.name) private regModel: Model<RegistrationDocument>,
     private tournamentsService: TournamentsService,
     private teamsService: TeamsService,
+    private usersService: UsersService,
   ) {}
 
   async registerAsTeam(
@@ -32,8 +55,23 @@ export class RegistrationsService {
     if ((team.captain as any)._id.toString() !== requesterId) {
       throw new BadRequestException('Only the captain can register the team');
     }
-    if (team.members.length < 7) {
-      throw new BadRequestException(`Team needs at least 7 players to register (currently ${team.members.length})`);
+
+    const tournament = await this.tournamentsService.findById(dto.tournamentId);
+    const minRoster = FORMAT_MIN_ROSTER[tournament.format] ?? 6;
+
+    if (!dto.roster || dto.roster.length < minRoster) {
+      throw new BadRequestException(
+        `Roster must have at least ${minRoster} players for ${tournament.format} format`,
+      );
+    }
+
+    const teamMemberIds = new Set(
+      team.members.map((m) => ((m.user as any)._id ?? m.user).toString()),
+    );
+    for (const playerId of dto.roster) {
+      if (!teamMemberIds.has(playerId)) {
+        throw new BadRequestException(`Player ${playerId} is not a member of this team`);
+      }
     }
 
     const existing = await this.regModel.findOne({
@@ -48,6 +86,7 @@ export class RegistrationsService {
       type: RegistrationType.TEAM,
       team: new Types.ObjectId(dto.teamId),
       player: new Types.ObjectId(requesterId),
+      roster: dto.roster.map((id) => new Types.ObjectId(id)),
       role: dto.role,
       status: RegistrationStatus.REGISTERED,
     });
@@ -64,6 +103,8 @@ export class RegistrationsService {
     dto: CreateRegistrationDto,
     playerId: string,
   ): Promise<RegistrationDocument> {
+    if (!dto.role) throw new BadRequestException('role required for solo registration');
+
     const existing = await this.regModel.findOne({
       tournament: new Types.ObjectId(dto.tournamentId),
       player: new Types.ObjectId(playerId),
@@ -86,6 +127,61 @@ export class RegistrationsService {
     );
 
     return registration;
+  }
+
+  async getMarket(tournamentId?: string): Promise<MarketPlayer[]> {
+    const teamRegs = await this.regModel
+      .find({
+        type: RegistrationType.TEAM,
+        status: { $ne: RegistrationStatus.CANCELLED },
+      })
+      .select('roster')
+      .lean()
+      .exec();
+
+    const rosteredIds = new Set<string>(
+      teamRegs.flatMap((r) => ((r as any).roster ?? []).map((id: Types.ObjectId) => id.toString())),
+    );
+
+    const allUsers = await this.usersService.findAll();
+    const availableUsers = allUsers.filter((u) => !rosteredIds.has(u._id.toString()));
+
+    let soloMap = new Map<string, RegistrationDocument>();
+    if (tournamentId) {
+      const soloRegs = await this.regModel
+        .find({
+          tournament: new Types.ObjectId(tournamentId),
+          type: RegistrationType.SOLO,
+          status: { $ne: RegistrationStatus.CANCELLED },
+        })
+        .populate('tournament', 'name')
+        .exec();
+      for (const reg of soloRegs) {
+        soloMap.set(reg.player!.toString(), reg);
+      }
+    }
+
+    return availableUsers.map((user) => {
+      const soloReg = soloMap.get(user._id.toString());
+      return {
+        _id: user._id.toString(),
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatar: user.avatar,
+        volleyballRoles: user.volleyballRoles,
+        hasTeam: user.teams.length > 0,
+        soloRegistration: soloReg
+          ? {
+              _id: (soloReg._id as Types.ObjectId).toString(),
+              tournament: {
+                _id: (soloReg.tournament as any)._id?.toString() ?? soloReg.tournament.toString(),
+                name: (soloReg.tournament as any).name ?? '',
+              },
+              role: soloReg.role,
+            }
+          : null,
+      };
+    });
   }
 
   async getWantToJoin(tournamentId: string): Promise<RegistrationDocument[]> {

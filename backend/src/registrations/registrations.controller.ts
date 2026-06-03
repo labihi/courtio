@@ -4,6 +4,7 @@ import {
   Post,
   Patch,
   Param,
+  Query,
   Body,
   UseGuards,
 } from '@nestjs/common';
@@ -39,6 +40,11 @@ export class RegistrationsController {
   @Get('tournament/:tournamentId')
   getTournamentRegistrations(@Param('tournamentId') id: string) {
     return this.registrationsService.getTournamentRegistrations(id);
+  }
+
+  @Get('market')
+  getMarket(@Query('tournamentId') tournamentId?: string) {
+    return this.registrationsService.getMarket(tournamentId);
   }
 
   @Get('tournament/:tournamentId/want-to-join')

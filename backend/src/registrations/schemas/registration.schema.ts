@@ -31,8 +31,11 @@ export class Registration {
   @Prop({ type: Types.ObjectId, ref: 'User' })
   player: Types.ObjectId;
 
-  @Prop({ type: String, enum: VolleyballRole, required: true })
+  @Prop({ type: String, enum: VolleyballRole })
   role: VolleyballRole;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+  roster: Types.ObjectId[];
 
   @Prop({ type: String, enum: RegistrationStatus, default: RegistrationStatus.REGISTERED })
   status: RegistrationStatus;

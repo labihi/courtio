@@ -1,4 +1,4 @@
-import { IsString, IsEnum, IsOptional } from 'class-validator';
+import { IsString, IsEnum, IsOptional, IsArray } from 'class-validator';
 import { RegistrationType, RegistrationStatus } from '../schemas/registration.schema';
 import { VolleyballRole } from '../../common/enums/volleyball-role.enum';
 
@@ -13,8 +13,14 @@ export class CreateRegistrationDto {
   @IsOptional()
   teamId?: string;
 
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  roster?: string[];
+
   @IsEnum(VolleyballRole)
-  role: VolleyballRole;
+  @IsOptional()
+  role?: VolleyballRole;
 
   @IsEnum(RegistrationStatus)
   @IsOptional()
