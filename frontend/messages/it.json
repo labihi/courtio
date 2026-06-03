@@ -270,10 +270,17 @@
     }
   },
   "roles_labels": {
-    "OH": "Schiacciatore Laterale",
-    "MB": "Muro Centrale",
+    "OH": "Martello",
+    "MB": "Centrale",
     "OPP": "Opposto",
-    "SET": "Alzatore",
+    "SET": "Pallegiatore",
     "LIB": "Libero"
+  },
+  "roles_short": {
+    "OH": "OH",
+    "MB": "MB",
+    "OPP": "OPP",
+    "SET": "SET",
+    "LIB": "LIB"
   }
 }

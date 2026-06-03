@@ -181,75 +181,77 @@ function RosterPageContent() {
                 {team.members.map((member, idx) => {
                   const memberIsCaptain = member.user._id === team.captain._id;
                   return (
-                    <div key={idx} className="flex items-center gap-3 p-4">
-                      <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-xs font-bold text-primary shrink-0">
-                        #{member.jerseyNumber ?? idx + 1}
-                      </div>
-                      <Avatar className="h-10 w-10 shrink-0">
-                        <AvatarImage src={member.user.avatar} />
-                        <AvatarFallback>
-                          {member.user.firstName?.[0]}{member.user.lastName?.[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm truncate">
-                          {member.user.firstName} {member.user.lastName}
-                        </p>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
-                          {memberIsCaptain && <Crown className="h-3 w-3 text-yellow-400" />}
-                          {memberIsCaptain ? t('captain') : t('member')}
-                        </p>
-                      </div>
+                    <div key={idx} className="flex flex-col p-4 gap-2">
+                      {/* Top row: number, avatar, name, badge, actions */}
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center text-xs font-bold text-primary shrink-0">
+                          #{member.jerseyNumber ?? idx + 1}
+                        </div>
+                        <Avatar className="h-10 w-10 shrink-0">
+                          <AvatarImage src={member.user.avatar} />
+                          <AvatarFallback>
+                            {member.user.firstName?.[0]}{member.user.lastName?.[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm truncate">
+                            {member.user.firstName} {member.user.lastName}
+                          </p>
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            {memberIsCaptain && <Crown className="h-3 w-3 text-yellow-400" />}
+                            {memberIsCaptain ? t('captain') : t('member')}
+                          </p>
+                        </div>
 
-                      {/* Role — editable by captain */}
-                      <div className="shrink-0">
-                        {isCaptain ? (
-                          <Select
-                            value={member.role ?? 'none'}
-                            onValueChange={(v) => handleUpdateRole(member.user._id, v)}
-                          >
-                            <SelectTrigger className="h-7 text-xs w-32 border-dashed">
-                              <SelectValue placeholder={t('noRole')} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="none">
-                                <span className="text-muted-foreground">{t('noRole')}</span>
-                              </SelectItem>
-                              {ROLES.map(([v, l]) => (
-                                <SelectItem key={v} value={v}>{l}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">
-                            {member.role ? ROLE_LABELS[member.role] : '—'}
+                        {!isCaptain && (
+                          <span className="text-xs text-muted-foreground shrink-0">
+                            {member.role ? tRoles(member.role) : '—'}
                           </span>
+                        )}
+
+                        <Badge variant="success" className="text-[10px] shrink-0">{t('active')}</Badge>
+
+                        {isCaptain && !memberIsCaptain && (
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button
+                              title={t('makeCaptainTitle')}
+                              onClick={() => {
+                                setTransferTargetId(member.user._id);
+                                setTransferTargetName(`${member.user.firstName} ${member.user.lastName}`);
+                                setTransferOpen(true);
+                              }}
+                              className="text-muted-foreground hover:text-yellow-400 transition-colors"
+                            >
+                              <Crown className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => handleRemoveMember(member.user._id)}
+                              className="text-muted-foreground hover:text-destructive text-xs ml-1"
+                            >
+                              ✕
+                            </button>
+                          </div>
                         )}
                       </div>
 
-                      <Badge variant="success" className="text-[10px] shrink-0">{t('active')}</Badge>
-
-                      {/* Captain actions on non-captain members */}
-                      {isCaptain && !memberIsCaptain && (
-                        <div className="flex items-center gap-1 shrink-0">
-                          <button
-                            title={t('makeCaptainTitle')}
-                            onClick={() => {
-                              setTransferTargetId(member.user._id);
-                              setTransferTargetName(`${member.user.firstName} ${member.user.lastName}`);
-                              setTransferOpen(true);
-                            }}
-                            className="text-muted-foreground hover:text-yellow-400 transition-colors"
-                          >
-                            <Crown className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => handleRemoveMember(member.user._id)}
-                            className="text-muted-foreground hover:text-destructive text-xs ml-1"
-                          >
-                            ✕
-                          </button>
-                        </div>
+                      {/* Role select — own row for captain */}
+                      {isCaptain && (
+                        <Select
+                          value={member.role ?? 'none'}
+                          onValueChange={(v) => handleUpdateRole(member.user._id, v)}
+                        >
+                          <SelectTrigger className="h-8 text-xs border-dashed">
+                            <SelectValue placeholder={t('noRole')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">
+                              <span className="text-muted-foreground">{t('noRole')}</span>
+                            </SelectItem>
+                            {ROLES.map(([v, l]) => (
+                              <SelectItem key={v} value={v}>{l}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       )}
                     </div>
                   );

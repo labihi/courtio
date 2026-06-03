@@ -11,9 +11,28 @@ export class TournamentsService {
     @InjectModel(Tournament.name) private tournamentModel: Model<TournamentDocument>,
   ) {}
 
+  private async geocodePlace(placeName: string, placeAddress: string): Promise<{ lat: number; lng: number } | null> {
+    const token = process.env.MAPBOX_TOKEN;
+    if (!token) return null;
+    try {
+      const query = encodeURIComponent(`${placeName} ${placeAddress}`);
+      const res = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${token}&limit=1`,
+      );
+      const data = await res.json() as { features?: { center: [number, number] }[] };
+      const [lng, lat] = data.features?.[0]?.center ?? [];
+      if (!lng || !lat) return null;
+      return { lat, lng };
+    } catch {
+      return null;
+    }
+  }
+
   async create(dto: CreateTournamentDto, organizerId: string): Promise<TournamentDocument> {
+    const coords = await this.geocodePlace(dto.place.placeName, dto.place.placeAddress);
     return this.tournamentModel.create({
       ...dto,
+      place: { ...dto.place, ...coords },
       organizers: [new Types.ObjectId(organizerId)],
     });
   }
@@ -47,8 +66,13 @@ export class TournamentsService {
   }
 
   async update(id: string, dto: UpdateTournamentDto): Promise<TournamentDocument> {
+    let updateData: UpdateTournamentDto = dto;
+    if (dto.place) {
+      const coords = await this.geocodePlace(dto.place.placeName, dto.place.placeAddress);
+      updateData = { ...dto, place: { ...dto.place, ...coords } };
+    }
     const tournament = await this.tournamentModel
-      .findByIdAndUpdate(id, dto, { new: true })
+      .findByIdAndUpdate(id, updateData, { new: true })
       .exec();
     if (!tournament) throw new NotFoundException(`Tournament ${id} not found`);
     return tournament;
@@ -77,6 +101,12 @@ export class TournamentsService {
   async addSoloRegistration(tournamentId: string, registrationId: Types.ObjectId): Promise<void> {
     await this.tournamentModel.findByIdAndUpdate(tournamentId, {
       $addToSet: { soloRegistrations: registrationId },
+    });
+  }
+
+  async removeSoloRegistration(tournamentId: string, registrationId: Types.ObjectId): Promise<void> {
+    await this.tournamentModel.findByIdAndUpdate(tournamentId, {
+      $pull: { soloRegistrations: registrationId },
     });
   }
 

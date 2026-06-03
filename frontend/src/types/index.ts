@@ -53,6 +53,8 @@ export interface TournamentPlace {
   placeName: string;
   placeAddress: string;
   placeUrl?: string;
+  lat?: number;
+  lng?: number;
 }
 
 export interface Tournament {

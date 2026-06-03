@@ -21,6 +21,11 @@ const COURT_POSITIONS: { role: VolleyballRole; label: string; gridArea: string }
   { role: 'LIB', label: 'LIB', gridArea: 'col-start-3 col-end-4 row-start-3' },
 ];
 
+const SLOTS_PER_ROLE = COURT_POSITIONS.reduce<Partial<Record<VolleyballRole, number>>>(
+  (acc, pos) => ({ ...acc, [pos.role]: (acc[pos.role] ?? 0) + 1 }),
+  {},
+);
+
 export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
   const t = useTranslations('tacticalView');
   const filledCount = team.members.filter((m) => m.status === 'ACTIVE').length;
@@ -57,6 +62,9 @@ export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
           const roleMembers = roleToMembers[pos.role] ?? [];
           const used = usedByRole[pos.role] ?? 0;
           const member = roleMembers[used];
+          const slotsForRole = SLOTS_PER_ROLE[pos.role] ?? 1;
+          const overflow = roleMembers.length - slotsForRole;
+          const showOverflow = !!member && used + 1 === slotsForRole && overflow > 0;
           usedByRole[pos.role] = used + 1;
 
           return (
@@ -70,6 +78,11 @@ export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
                         {member.user.firstName[0]}{member.user.lastName[0]}
                       </AvatarFallback>
                     </Avatar>
+                    {showOverflow && (
+                      <span className="absolute -bottom-1 -right-1 h-4 min-w-4 px-0.5 rounded-full bg-primary text-white text-[9px] font-bold flex items-center justify-center ring-1 ring-background">
+                        +{overflow}
+                      </span>
+                    )}
                   </div>
                   <span className="text-[10px] font-medium truncate max-w-[60px] text-center leading-tight">
                     {member.user.firstName} ({pos.label})

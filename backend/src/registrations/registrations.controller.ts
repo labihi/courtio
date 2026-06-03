@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Param,
   Query,
   Body,
@@ -12,6 +13,7 @@ import { RegistrationsService } from './registrations.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { ClerkAuthGuard } from '../auth/clerk.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { UserDocument } from '../users/schemas/user.schema';
 import { RegistrationStatus, RegistrationType } from './schemas/registration.schema';
@@ -55,6 +57,12 @@ export class RegistrationsController {
   @Get('me')
   getMyRegistrations(@CurrentUser() user: UserDocument) {
     return this.registrationsService.getMyRegistrations(user._id.toString());
+  }
+
+  @Delete(':id')
+  @Roles('admin')
+  deleteRegistration(@Param('id') id: string) {
+    return this.registrationsService.deleteRegistration(id);
   }
 
   @Patch(':id/cancel')

@@ -11,8 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useLocale } from 'next-intl';
-import { tournamentApi } from '@/lib/api';
+import { useLocale, useTranslations } from 'next-intl';
+import { tournamentApi, registrationApi } from '@/lib/api';
 import { toast } from '@/hooks/use-toast';
 import { Tournament } from '@/types';
 import { formatDateTime, formatCurrency } from '@/lib/utils';
@@ -36,6 +36,7 @@ const STATUS_VARIANT: Record<string, 'default' | 'success' | 'secondary' | 'dest
 
 export default function AdminTournamentDetailPage() {
   const locale = useLocale();
+  const tRolesShort = useTranslations('roles_short');
   const { id } = useParams<{ id: string }>();
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [loading, setLoading] = useState(true);
@@ -95,6 +96,13 @@ export default function AdminTournamentDetailPage() {
     if (!confirm('Remove this team from the tournament?')) return;
     await tournamentApi.removeTeam(id, teamId);
     toast.success('Team removed');
+    load();
+  };
+
+  const handleDeleteRegistration = async (regId: string) => {
+    if (!confirm('Remove this player from the want-to-join list?')) return;
+    await registrationApi.deleteRegistration(regId);
+    toast.success('Registration removed');
     load();
   };
 
@@ -245,9 +253,17 @@ export default function AdminTournamentDetailPage() {
                       {reg.player?.firstName} {reg.player?.lastName}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {reg.role} · {reg.status}
+                      {reg.role ? tRolesShort(reg.role) : '—'} · {reg.status}
                     </p>
                   </div>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7 text-destructive shrink-0"
+                    onClick={() => handleDeleteRegistration(reg._id)}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
               ))}
             </div>

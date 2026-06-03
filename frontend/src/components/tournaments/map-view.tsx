@@ -7,14 +7,25 @@ interface MapViewProps {
   placeName: string;
   placeAddress: string;
   placeUrl?: string;
+  lat?: number;
+  lng?: number;
 }
 
-export function MapView({ placeName, placeAddress, placeUrl }: MapViewProps) {
+function buildStaticUrl(lat: number, lng: number, token: string): string {
+  const marker = `pin-s+6366f1(${lng},${lat})`;
+  return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/${marker}/${lng},${lat},15,0/600x300@2x?access_token=${token}`;
+}
+
+export function MapView({ placeName, placeAddress, placeUrl, lat, lng }: MapViewProps) {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
   useEffect(() => {
+    if (lat && lng) {
+      setImgUrl(buildStaticUrl(lat, lng, token));
+      return;
+    }
     const query = encodeURIComponent(`${placeName} ${placeAddress}`);
     fetch(
       `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${token}&limit=1`
@@ -23,13 +34,10 @@ export function MapView({ placeName, placeAddress, placeUrl }: MapViewProps) {
       .then((data) => {
         const [lng, lat] = data.features?.[0]?.center ?? [];
         if (!lng || !lat) { setError(true); return; }
-        const marker = `pin-s+6366f1(${lng},${lat})`;
-        setImgUrl(
-          `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/${marker}/${lng},${lat},15,0/600x300@2x?access_token=${token}`
-        );
+        setImgUrl(buildStaticUrl(lat, lng, token));
       })
       .catch(() => setError(true));
-  }, [placeName, placeAddress, token]);
+  }, [placeName, placeAddress, lat, lng, token]);
 
   if (error) return (
     <p className="text-xs text-muted-foreground text-center py-4">Location not found</p>

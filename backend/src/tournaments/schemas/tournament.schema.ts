@@ -11,6 +11,12 @@ class Place {
 
   @Prop()
   placeUrl?: string;
+
+  @Prop()
+  lat?: number;
+
+  @Prop()
+  lng?: number;
 }
 
 export type TournamentDocument = Tournament & Document;

@@ -138,6 +138,8 @@ export default function TournamentDetailPage() {
             placeName={tournament.place.placeName}
             placeAddress={tournament.place.placeAddress}
             placeUrl={tournament.place.placeUrl}
+            lat={tournament.place.lat}
+            lng={tournament.place.lng}
           />
         </div>
 

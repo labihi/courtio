@@ -220,6 +220,17 @@ export class RegistrationsService {
     return reg.save();
   }
 
+  async deleteRegistration(registrationId: string): Promise<void> {
+    const reg = await this.regModel.findByIdAndDelete(registrationId);
+    if (!reg) throw new NotFoundException('Registration not found');
+    if (reg.tournament) {
+      await this.tournamentsService.removeSoloRegistration(
+        reg.tournament.toString(),
+        reg._id as Types.ObjectId,
+      );
+    }
+  }
+
   async updateStatus(
     registrationId: string,
     status: RegistrationStatus,

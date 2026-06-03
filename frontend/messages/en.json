@@ -275,5 +275,12 @@
     "OPP": "Opposite Hitter",
     "SET": "Setter",
     "LIB": "Libero"
+  },
+  "roles_short": {
+    "OH": "OH",
+    "MB": "MB",
+    "OPP": "OPP",
+    "SET": "SET",
+    "LIB": "LIB"
   }
 }
