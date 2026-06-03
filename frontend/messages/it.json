@@ -73,7 +73,10 @@
     "addPlayerBtn": "Aggiungi Giocatore",
     "makeCaptainTitle": "Rendi capitano",
     "needMorePlayers": "servono ancora {count}",
-    "playerCount": "{count, plural, one {# giocatore} other {# giocatori}}"
+    "playerCount": "{count, plural, one {# giocatore} other {# giocatori}}",
+    "removePlayerTitle": "Rimuovi Giocatore",
+    "removePlayerConfirm": "Rimuovere {name} dalla squadra?",
+    "removePlayerBtn": "Rimuovi"
   },
   "profile": {
     "title": "Profilo",

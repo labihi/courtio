@@ -31,6 +31,9 @@ function RosterPageContent() {
   const [transferOpen, setTransferOpen] = useState(false);
   const [transferTargetId, setTransferTargetId] = useState('');
   const [transferTargetName, setTransferTargetName] = useState('');
+  const [removeOpen, setRemoveOpen] = useState(false);
+  const [removeTargetId, setRemoveTargetId] = useState('');
+  const [removeTargetName, setRemoveTargetName] = useState('');
   const [teamName, setTeamName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<User[]>([]);
@@ -226,7 +229,11 @@ function RosterPageContent() {
                               <Crown className="h-4 w-4" />
                             </button>
                             <button
-                              onClick={() => handleRemoveMember(member.user._id)}
+                              onClick={() => {
+                                setRemoveTargetId(member.user._id);
+                                setRemoveTargetName(`${member.user.firstName} ${member.user.lastName}`);
+                                setRemoveOpen(true);
+                              }}
                               className="text-muted-foreground hover:text-destructive text-xs ml-1"
                             >
                               ✕
@@ -355,6 +362,30 @@ function RosterPageContent() {
             <Button variant="outline" onClick={() => { setAddMemberOpen(false); setRecruitRole(null); }}>{t('cancelBtn')}</Button>
             <Button onClick={handleAddMember} disabled={!selectedUserId || !selectedRole}>
               {t('addPlayerBtn')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Player Confirmation Dialog */}
+      <Dialog open={removeOpen} onOpenChange={setRemoveOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('removePlayerTitle')}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground py-2">
+            {t('removePlayerConfirm', { name: removeTargetName })}
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRemoveOpen(false)}>{t('cancelBtn')}</Button>
+            <Button
+              variant="destructive"
+              onClick={async () => {
+                await handleRemoveMember(removeTargetId);
+                setRemoveOpen(false);
+              }}
+            >
+              {t('removePlayerBtn')}
             </Button>
           </DialogFooter>
         </DialogContent>
