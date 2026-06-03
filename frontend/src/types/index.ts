@@ -1,4 +1,4 @@
-export type VolleyballRole = 'OH' | 'MB' | 'OPP' | 'SET' | 'LIB' | 'DS';
+export type VolleyballRole = 'OH' | 'MB' | 'OPP' | 'SET' | 'LIB';
 
 export const ROLE_LABELS: Record<VolleyballRole, string> = {
   OH: 'Outside Hitter',
@@ -6,7 +6,6 @@ export const ROLE_LABELS: Record<VolleyballRole, string> = {
   OPP: 'Opposite Hitter',
   SET: 'Setter',
   LIB: 'Libero',
-  DS: 'Defensive Specialist',
 };
 
 export const ROLE_COLORS: Record<VolleyballRole, string> = {
@@ -15,7 +14,6 @@ export const ROLE_COLORS: Record<VolleyballRole, string> = {
   OPP: 'bg-purple-500',
   SET: 'bg-green-500',
   LIB: 'bg-yellow-500',
-  DS: 'bg-gray-500',
 };
 
 export interface User {
@@ -83,10 +81,25 @@ export interface Registration {
   type: 'TEAM' | 'SOLO';
   team?: Team | string;
   player?: User;
-  role: VolleyballRole;
+  roster?: User[];
+  role?: VolleyballRole;
   status: 'REGISTERED' | 'WANT_TO_JOIN' | 'CONFIRMED' | 'WAITLIST' | 'CANCELLED';
   createdAt: string;
   updatedAt: string;
+}
+
+export interface MarketPlayer {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  avatar?: string;
+  volleyballRoles: VolleyballRole[];
+  hasTeam: boolean;
+  soloRegistration?: {
+    _id: string;
+    tournament: { _id: string; name: string };
+    role: VolleyballRole;
+  } | null;
 }
 
 export const STANDARD_ROSTER: Record<VolleyballRole, number> = {
@@ -95,5 +108,4 @@ export const STANDARD_ROSTER: Record<VolleyballRole, number> = {
   OPP: 1,
   SET: 1,
   LIB: 1,
-  DS: 0,
 };

@@ -77,6 +77,8 @@ export const teamApi = {
 export const registrationApi = {
   registerAsTeam: (data: unknown) => api.post('/registrations/team', data),
   registerAsSolo: (data: unknown) => api.post('/registrations/solo', data),
+  getMarket: (tournamentId?: string) =>
+    api.get('/registrations/market', { params: tournamentId ? { tournamentId } : {} }),
   getWantToJoin: (tournamentId: string) =>
     api.get(`/registrations/tournament/${tournamentId}/want-to-join`),
   getMyRegistrations: () => api.get('/registrations/me'),
