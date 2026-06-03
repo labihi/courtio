@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Trash2, UserPlus } from 'lucide-react';
+import { Trash2, UserPlus, ChevronRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { TopBar } from '@/components/layout/top-bar';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -53,13 +54,13 @@ export default function AdminTeamsPage() {
         {teams.map((team) => (
           <div key={team._id} className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center justify-between mb-3">
-              <div>
-                <h3 className="font-semibold">{team.name}</h3>
+              <Link href={`/admin/teams/${team._id}`} className="flex-1 min-w-0">
+                <h3 className="font-semibold hover:text-primary transition-colors">{team.name}</h3>
                 <p className="text-xs text-muted-foreground">
                   {t('captainLabel')} {team.captain.firstName} {team.captain.lastName}
                 </p>
-              </div>
-              <div className="flex gap-2">
+              </Link>
+              <div className="flex gap-2 shrink-0">
                 <Button
                   size="icon" variant="ghost" className="h-8 w-8"
                   onClick={() => { setTargetTeam(team); setAddOpen(true); }}
