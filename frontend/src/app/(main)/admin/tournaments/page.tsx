@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,12 +16,14 @@ import { Tournament } from '@/types';
 import { formatDate, formatCurrency } from '@/lib/utils';
 
 const EMPTY_FORM = {
-  name: '', place: '', price: '', dateTime: '', maxTeamSlots: '',
+  name: '', placeName: '', placeAddress: '', placeUrl: '', price: '', dateTime: '',
+  registrationCloseDateTime: '', maxTeamSlots: '',
   format: '6v6', skillLevel: 'Open', description: '', imageUrl: '',
 };
 
 export default function AdminTournamentsPage() {
   const t = useTranslations('adminTournaments');
+  const locale = useLocale();
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Tournament | null>(null);
@@ -36,8 +38,15 @@ export default function AdminTournamentsPage() {
   const openEdit = (tournament: Tournament) => {
     setEditing(tournament);
     setForm({
-      name: tournament.name, place: tournament.place, price: String(tournament.price),
+      name: tournament.name,
+      placeName: tournament.place.placeName,
+      placeAddress: tournament.place.placeAddress,
+      placeUrl: tournament.place.placeUrl ?? '',
+      price: String(tournament.price),
       dateTime: tournament.dateTime.slice(0, 16),
+      registrationCloseDateTime: tournament.registrationCloseDateTime
+        ? new Date(tournament.registrationCloseDateTime).toISOString().slice(0, 16)
+        : '',
       maxTeamSlots: String(tournament.maxTeamSlots),
       format: tournament.format, skillLevel: tournament.skillLevel,
       description: tournament.description ?? '', imageUrl: tournament.imageUrl ?? '',
@@ -46,12 +55,18 @@ export default function AdminTournamentsPage() {
   };
 
   const handleSubmit = async () => {
+    const place: Record<string, string> = { placeName: form.placeName, placeAddress: form.placeAddress };
+    if (form.placeUrl) place.placeUrl = form.placeUrl;
     const payload: Record<string, unknown> = {
-      ...form,
+      name: form.name, place,
       price: Number(form.price),
+      dateTime: form.dateTime,
+      ...(form.registrationCloseDateTime ? { registrationCloseDateTime: form.registrationCloseDateTime } : {}),
       maxTeamSlots: Number(form.maxTeamSlots),
+      format: form.format, skillLevel: form.skillLevel,
+      description: form.description,
     };
-    if (!payload.imageUrl) delete payload.imageUrl;
+    if (form.imageUrl) payload.imageUrl = form.imageUrl;
     if (editing) {
       await tournamentApi.update(editing._id, payload);
     } else {
@@ -75,9 +90,12 @@ export default function AdminTournamentsPage() {
 
   const formFields: [keyof typeof form, string, string, string][] = [
     ['name', t('nameLabel'), 'text', t('namePlaceholder')],
-    ['place', t('venueLabel'), 'text', t('venuePlaceholder')],
+    ['placeName', t('venueNameLabel'), 'text', t('venueNamePlaceholder')],
+    ['placeAddress', t('venueAddressLabel'), 'text', t('venueAddressPlaceholder')],
+    ['placeUrl', t('venueUrlLabel'), 'url', t('venueUrlPlaceholder')],
     ['price', t('priceLabel'), 'number', t('pricePlaceholder')],
     ['dateTime', t('dateTimeLabel'), 'datetime-local', ''],
+    ['registrationCloseDateTime', t('regCloseDateTimeLabel'), 'datetime-local', ''],
     ['maxTeamSlots', t('maxSlotsLabel'), 'number', t('maxSlotsPlaceholder')],
     ['imageUrl', t('imageUrlLabel'), 'url', t('imageUrlPlaceholder')],
   ];
@@ -96,9 +114,9 @@ export default function AdminTournamentsPage() {
             <div className="flex items-start justify-between gap-2">
               <Link href={`/admin/tournaments/${tournament._id}`} className="flex-1 min-w-0 min-w-0">
                 <h3 className="font-semibold truncate hover:text-primary transition-colors">{tournament.name}</h3>
-                <p className="text-xs text-muted-foreground">{tournament.place} · {formatDate(tournament.dateTime)}</p>
+                <p className="text-xs text-muted-foreground">{tournament.place.placeName} · {formatDate(tournament.dateTime, locale)}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {formatCurrency(tournament.price)} · {t('teamsCount', { registered: tournament.registeredTeams?.length ?? 0, max: tournament.maxTeamSlots })}
+                  {formatCurrency(tournament.price, locale)} · {t('teamsCount', { registered: tournament.registeredTeams?.length ?? 0, max: tournament.maxTeamSlots })}
                 </p>
               </Link>
               <div className="flex gap-2 shrink-0">

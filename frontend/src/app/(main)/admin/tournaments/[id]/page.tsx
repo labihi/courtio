@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useLocale } from 'next-intl';
 import { tournamentApi } from '@/lib/api';
 import { toast } from '@/hooks/use-toast';
 import { Tournament } from '@/types';
@@ -19,7 +20,8 @@ import { formatDateTime, formatCurrency } from '@/lib/utils';
 const STATUS_OPTIONS = ['UPCOMING', 'OPEN', 'FULL', 'ONGOING', 'COMPLETED', 'CANCELLED'] as const;
 
 const EMPTY_FORM = {
-  name: '', place: '', price: '', dateTime: '', maxTeamSlots: '',
+  name: '', placeName: '', placeAddress: '', placeUrl: '', price: '', dateTime: '',
+  registrationCloseDateTime: '', maxTeamSlots: '',
   format: '6v6', skillLevel: 'Open', description: '', imageUrl: '',
 };
 
@@ -33,6 +35,7 @@ const STATUS_VARIANT: Record<string, 'default' | 'success' | 'secondary' | 'dest
 };
 
 export default function AdminTournamentDetailPage() {
+  const locale = useLocale();
   const { id } = useParams<{ id: string }>();
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,9 +51,14 @@ export default function AdminTournamentDetailPage() {
     if (!tournament) return;
     setForm({
       name: tournament.name,
-      place: tournament.place,
+      placeName: tournament.place.placeName,
+      placeAddress: tournament.place.placeAddress,
+      placeUrl: tournament.place.placeUrl ?? '',
       price: String(tournament.price),
       dateTime: new Date(tournament.dateTime).toISOString().slice(0, 16),
+      registrationCloseDateTime: tournament.registrationCloseDateTime
+        ? new Date(tournament.registrationCloseDateTime).toISOString().slice(0, 16)
+        : '',
       maxTeamSlots: String(tournament.maxTeamSlots),
       format: tournament.format,
       skillLevel: tournament.skillLevel,
@@ -61,12 +69,18 @@ export default function AdminTournamentDetailPage() {
   };
 
   const handleEditSubmit = async () => {
+    const place: Record<string, string> = { placeName: form.placeName, placeAddress: form.placeAddress };
+    if (form.placeUrl) place.placeUrl = form.placeUrl;
     const payload: Record<string, unknown> = {
-      ...form,
+      name: form.name, place,
       price: Number(form.price),
+      dateTime: form.dateTime,
+      ...(form.registrationCloseDateTime ? { registrationCloseDateTime: form.registrationCloseDateTime } : {}),
       maxTeamSlots: Number(form.maxTeamSlots),
+      format: form.format, skillLevel: form.skillLevel,
+      description: form.description,
     };
-    if (!payload.imageUrl) delete payload.imageUrl;
+    if (form.imageUrl) payload.imageUrl = form.imageUrl;
     await tournamentApi.update(id, payload);
     setEditOpen(false);
     load();
@@ -117,7 +131,7 @@ export default function AdminTournamentDetailPage() {
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
               <h1 className="font-bold text-lg truncate">{tournament.name}</h1>
-              <p className="text-xs text-muted-foreground mt-0.5">{tournament.place} · {formatDateTime(tournament.dateTime)}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{tournament.place.placeName} · {formatDateTime(tournament.dateTime, locale)}</p>
             </div>
             <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0" onClick={openEdit}>
               <Pencil className="h-4 w-4" />
@@ -128,7 +142,7 @@ export default function AdminTournamentDetailPage() {
             {[
               ['Format', tournament.format],
               ['Skill', tournament.skillLevel],
-              ['Price', formatCurrency(tournament.price)],
+              ['Price', formatCurrency(tournament.price, locale)],
             ].map(([label, value]) => (
               <div key={label} className="rounded-lg bg-secondary p-2">
                 <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</p>
@@ -250,9 +264,12 @@ export default function AdminTournamentDetailPage() {
           <div className="space-y-3 py-2">
             {([
               ['name', 'Name', 'text', ''],
-              ['place', 'Venue', 'text', ''],
+              ['placeName', 'Venue Name', 'text', 'Grand Arena'],
+              ['placeAddress', 'Venue Address', 'text', 'Seattle, WA'],
+              ['placeUrl', 'Google Maps URL', 'url', 'https://maps.google.com/...'],
               ['price', 'Price ($)', 'number', ''],
               ['dateTime', 'Date & Time', 'datetime-local', ''],
+              ['registrationCloseDateTime', 'Registration Closes', 'datetime-local', ''],
               ['maxTeamSlots', 'Max Team Slots', 'number', ''],
               ['imageUrl', 'Image URL', 'url', 'https://...'],
             ] as const).map(([key, label, type, placeholder]) => (
