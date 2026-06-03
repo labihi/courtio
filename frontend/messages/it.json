@@ -18,7 +18,7 @@
     "settings": "Impostazioni"
   },
   "discover": {
-    "seasonBadge": "Stagione 2024 Aperta",
+    "seasonBadge": "Stagione 2026 Aperta",
     "heroTitle": "Eleva il Tuo Gioco",
     "heroSubtitle": "Su",
     "heroHighlight": "Sabbia e Parquet",
@@ -29,11 +29,24 @@
     "upcomingTitle": "Tornei in Arrivo",
     "filtersBtn": "Filtri",
     "sortByDate": "Ordina per: Data",
-    "noTournaments": "Nessun torneo trovato."
+    "noTournaments": "Nessun torneo trovato.",
+    "activeFilters": "{count} attivi",
+    "filterTitle": "Filtri",
+    "filterStatus": "Stato",
+    "filterFormat": "Formato",
+    "filterSkill": "Livello",
+    "filterClearAll": "Azzera",
+    "filterApply": "Applica",
+    "sortLabel": "Ordina",
+    "sortDateAsc": "Data: Prima i prossimi",
+    "sortDateDesc": "Data: Più lontani",
+    "sortPriceAsc": "Prezzo: Crescente",
+    "sortPriceDesc": "Prezzo: Decrescente",
+    "sortNameAsc": "Nome: A-Z"
   },
   "roster": {
     "title": "Rosa",
-    "activeSeason": "Stagione Attiva: Regional Open 2024",
+    "activeSeason": "Stagione Attiva: 2026",
     "noTeamTitle": "Nessuna Squadra",
     "noTeamDescription": "Crea la tua squadra per iniziare a competere nei tornei.",
     "createTeamBtn": "Crea Squadra",
@@ -135,7 +148,23 @@
     "selectRolePlaceholder": "Seleziona ruolo...",
     "cancelBtn": "Annulla",
     "addBtn": "Aggiungi",
-    "deleteConfirm": "Eliminare questa squadra?"
+    "deleteConfirm": "Eliminare questa squadra?",
+    "detail": {
+      "editTitle": "Modifica Squadra",
+      "teamNameLabel": "Nome Squadra",
+      "seasonLabel": "Stagione",
+      "seasonPlaceholder": "2026",
+      "saveBtn": "Salva Modifiche",
+      "membersTitle": "Membri",
+      "addMemberBtn": "Aggiungi Membro",
+      "captainBadge": "Capitano",
+      "removeConfirm": "Rimuovere questo membro dalla squadra?",
+      "transferCaptainBtn": "Rendi Capitano",
+      "transferCaptainConfirm": "Trasferire il capitanato a {name}?",
+      "noMembers": "Nessun membro.",
+      "jerseyLabel": "Maglia #",
+      "deleteTeamBtn": "Elimina Squadra"
+    }
   },
   "adminTournaments": {
     "title": "Tornei",
@@ -146,9 +175,16 @@
     "namePlaceholder": "Pacific Slam Championship",
     "venueLabel": "Sede",
     "venuePlaceholder": "Grand Arena, Seattle WA",
+    "venueNameLabel": "Nome Sede",
+    "venueNamePlaceholder": "Grand Arena",
+    "venueAddressLabel": "Indirizzo Sede",
+    "venueAddressPlaceholder": "Seattle, WA",
+    "venueUrlLabel": "URL Google Maps",
+    "venueUrlPlaceholder": "https://maps.google.com/...",
     "priceLabel": "Prezzo (€)",
     "pricePlaceholder": "120",
     "dateTimeLabel": "Data e Ora",
+    "regCloseDateTimeLabel": "Chiusura Iscrizioni (opzionale)",
     "maxSlotsLabel": "Numero Massimo Squadre",
     "maxSlotsPlaceholder": "32",
     "imageUrlLabel": "URL Immagine",
@@ -181,7 +217,8 @@
     "slotsRemaining": "{remaining}/{max} posti rimanenti",
     "joinAsTeam": "Partecipa come Squadra",
     "joinSolo": "Partecipa da Solo",
-    "registrationCloses": "Le iscrizioni chiudono il 5 agosto o a esaurimento.",
+    "registrationCloses": "Le iscrizioni chiudono il {date} o a esaurimento.",
+    "registrationClosesFull": "Le iscrizioni chiudono a esaurimento posti.",
     "urgentSlots": "{count, plural, one {URGENTE: Solo # posto squadra rimasto! {registered} squadre già iscritte.} other {URGENTE: Solo # posti squadra rimasti! {registered} squadre già iscritte.}}",
     "indoorPro": "Indoor Pro"
   },
@@ -214,7 +251,17 @@
     "full": "Pieno",
     "registerNow": "Registrati Ora",
     "perTeam": "{price}/Squadra",
-    "slotsLeft": "{spots} Posti Rimasti"
+    "slotsLeft": "{spots} Posti Rimasti",
+    "entryFee": "Iscrizione: {price}",
+    "free": "Gratuito",
+    "status": {
+      "UPCOMING": "In Arrivo",
+      "OPEN": "Aperto",
+      "FULL": "Completo",
+      "ONGOING": "In Corso",
+      "COMPLETED": "Concluso",
+      "CANCELLED": "Annullato"
+    }
   },
   "roles_labels": {
     "OH": "Schiacciatore Laterale",

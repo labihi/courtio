@@ -29,7 +29,20 @@
     "upcomingTitle": "Upcoming Tournaments",
     "filtersBtn": "Filters",
     "sortByDate": "Sort by: Date",
-    "noTournaments": "No tournaments found."
+    "noTournaments": "No tournaments found.",
+    "activeFilters": "{count} active",
+    "filterTitle": "Filters",
+    "filterStatus": "Status",
+    "filterFormat": "Format",
+    "filterSkill": "Skill Level",
+    "filterClearAll": "Clear All",
+    "filterApply": "Apply",
+    "sortLabel": "Sort",
+    "sortDateAsc": "Date: Soonest",
+    "sortDateDesc": "Date: Latest",
+    "sortPriceAsc": "Price: Low → High",
+    "sortPriceDesc": "Price: High → Low",
+    "sortNameAsc": "Name: A-Z"
   },
   "roster": {
     "title": "Roster",
@@ -135,7 +148,23 @@
     "selectRolePlaceholder": "Select role...",
     "cancelBtn": "Cancel",
     "addBtn": "Add",
-    "deleteConfirm": "Delete this team?"
+    "deleteConfirm": "Delete this team?",
+    "detail": {
+      "editTitle": "Edit Team",
+      "teamNameLabel": "Team Name",
+      "seasonLabel": "Season",
+      "seasonPlaceholder": "2026",
+      "saveBtn": "Save Changes",
+      "membersTitle": "Members",
+      "addMemberBtn": "Add Member",
+      "captainBadge": "Captain",
+      "removeConfirm": "Remove this member from the team?",
+      "transferCaptainBtn": "Make Captain",
+      "transferCaptainConfirm": "Transfer captaincy to {name}?",
+      "noMembers": "No members yet.",
+      "jerseyLabel": "Jersey #",
+      "deleteTeamBtn": "Delete Team"
+    }
   },
   "adminTournaments": {
     "title": "Tournaments",
@@ -146,9 +175,16 @@
     "namePlaceholder": "Pacific Slam Championship",
     "venueLabel": "Venue",
     "venuePlaceholder": "Grand Arena, Seattle WA",
+    "venueNameLabel": "Venue Name",
+    "venueNamePlaceholder": "Grand Arena",
+    "venueAddressLabel": "Venue Address",
+    "venueAddressPlaceholder": "Seattle, WA",
+    "venueUrlLabel": "Google Maps URL",
+    "venueUrlPlaceholder": "https://maps.google.com/...",
     "priceLabel": "Price ($)",
     "pricePlaceholder": "120",
     "dateTimeLabel": "Date & Time",
+    "regCloseDateTimeLabel": "Registration Closes (optional)",
     "maxSlotsLabel": "Max Team Slots",
     "maxSlotsPlaceholder": "32",
     "imageUrlLabel": "Image URL",
@@ -181,7 +217,8 @@
     "slotsRemaining": "{remaining}/{max} slots remaining",
     "joinAsTeam": "Join as Team",
     "joinSolo": "Join Solo",
-    "registrationCloses": "Registration closes August 5th or when full.",
+    "registrationCloses": "Registration closes {date} or when full.",
+    "registrationClosesFull": "Registration closes when full.",
     "urgentSlots": "{count, plural, one {URGENT: Only # team slot left! {registered} teams already registered.} other {URGENT: Only # team slots left! {registered} teams already registered.}}",
     "indoorPro": "Indoor Pro"
   },
@@ -214,7 +251,17 @@
     "full": "Full",
     "registerNow": "Register Now",
     "perTeam": "{price}/Team",
-    "slotsLeft": "{spots} Slots Left"
+    "slotsLeft": "{spots} Slots Left",
+    "entryFee": "Entry: {price}",
+    "free": "Free",
+    "status": {
+      "UPCOMING": "Upcoming",
+      "OPEN": "Open",
+      "FULL": "Full",
+      "ONGOING": "Ongoing",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    }
   },
   "roles_labels": {
     "OH": "Outside Hitter",
