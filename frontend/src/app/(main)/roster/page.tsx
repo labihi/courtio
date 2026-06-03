@@ -341,7 +341,7 @@ function RosterPageContent() {
                   <SelectValue placeholder={t('selectRolePlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {ROLES.filter(([r]) => r !== 'DS').map(([v, l]) => (
+                  {ROLES.map(([v, l]) => (
                     <SelectItem key={v} value={v}>{l} ({v})</SelectItem>
                   ))}
                 </SelectContent>

@@ -130,7 +130,6 @@ export default function AdminTeamsPage() {
                 <SelectTrigger className="mt-1"><SelectValue placeholder={t('selectRolePlaceholder')} /></SelectTrigger>
                 <SelectContent>
                   {(Object.entries(ROLE_LABELS) as [VolleyballRole, string][])
-                    .filter(([r]) => r !== 'DS')
                     .map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)
                   }
                 </SelectContent>

@@ -16,7 +16,6 @@ const COURT_ROLE_MAP: Record<VolleyballRole, { x: number; y: number }> = {
   OPP: { x: 85, y: 30 },
   SET: { x: 50, y: 60 },
   LIB: { x: 50, y: 80 },
-  DS: { x: 50, y: 90 },
 };
 
 export default function RolesPage() {
@@ -52,7 +51,6 @@ export default function RolesPage() {
   const ROLES_WITH_NONE = [
     { value: '', label: t('noneSelected') },
     ...Object.entries(ROLE_LABELS)
-      .filter(([k]) => k !== 'DS')
       .map(([value, label]) => ({ value, label: `${label} (${value})` })),
   ];
 

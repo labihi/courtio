@@ -16,7 +16,7 @@ import { teamApi, userApi } from '@/lib/api';
 import { toast } from '@/hooks/use-toast';
 import { Team, TeamMember, VolleyballRole, ROLE_LABELS } from '@/types';
 
-const ROLES = Object.entries(ROLE_LABELS).filter(([r]) => r !== 'DS') as [VolleyballRole, string][];
+const ROLES = Object.entries(ROLE_LABELS) as [VolleyballRole, string][];
 
 export default function AdminTeamDetailPage() {
   const { id } = useParams<{ id: string }>();
