@@ -16,10 +16,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { teamApi, userApi } from '@/lib/api';
 import { Team, User, VolleyballRole, ROLE_LABELS } from '@/types';
 
-const ROLES = Object.entries(ROLE_LABELS) as [VolleyballRole, string][];
-
 function RosterPageContent() {
   const t = useTranslations('roster');
+  const tRoles = useTranslations('roles_labels');
+  const tRolesShort = useTranslations('roles_short');
+  const ROLES = (Object.keys(ROLE_LABELS) as VolleyballRole[]).map((k) => [k, tRoles(k)] as [VolleyballRole, string]);
   const searchParams = useSearchParams();
   const [allTeams, setAllTeams] = useState<Team[]>([]);
   const [team, setTeam] = useState<Team | null>(null);
@@ -298,7 +299,7 @@ function RosterPageContent() {
           <DialogHeader>
             <DialogTitle>
               {recruitRole
-                ? `${t('addPlayerTitle')} – ${ROLE_LABELS[recruitRole]}`
+                ? `${t('addPlayerTitle')} – ${tRoles(recruitRole)}`
                 : t('addPlayerTitle')}
             </DialogTitle>
           </DialogHeader>
@@ -329,7 +330,7 @@ function RosterPageContent() {
                       </Avatar>
                       <div>
                         <p className="text-sm font-medium">{u.firstName} {u.lastName}</p>
-                        <p className="text-xs text-muted-foreground">{u.volleyballRoles?.join(', ')}</p>
+                        <p className="text-xs text-muted-foreground">{u.volleyballRoles?.map((r) => tRolesShort(r)).join(', ')}</p>
                       </div>
                     </button>
                   ))}
