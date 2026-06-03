@@ -11,7 +11,7 @@ export default async function SignInPage() {
           <h1 className="text-3xl font-bold text-primary">Courtio</h1>
           <p className="text-muted-foreground mt-1">{t('tagline')}</p>
         </div>
-        <SignIn />
+        <SignIn forceRedirectUrl="/discover" />
       </div>
     </div>
   );
