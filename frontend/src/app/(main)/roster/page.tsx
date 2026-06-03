@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Plus, Download, UserPlus, Crown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
@@ -17,12 +18,14 @@ import { Team, User, VolleyballRole, ROLE_LABELS } from '@/types';
 
 const ROLES = Object.entries(ROLE_LABELS) as [VolleyballRole, string][];
 
-export default function RosterPage() {
+function RosterPageContent() {
   const t = useTranslations('roster');
+  const searchParams = useSearchParams();
+  const [allTeams, setAllTeams] = useState<Team[]>([]);
   const [team, setTeam] = useState<Team | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [createOpen, setCreateOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(() => searchParams.get('create') === 'true');
   const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
   const [transferTargetId, setTransferTargetId] = useState('');
@@ -35,8 +38,16 @@ export default function RosterPage() {
   const [recruitRole, setRecruitRole] = useState<VolleyballRole | null>(null);
 
   useEffect(() => {
+    const preferredId = searchParams.get('teamId');
     Promise.all([
-      teamApi.getMine().then((res) => { if (res.data.length > 0) setTeam(res.data[0]); }),
+      teamApi.getMine().then((res) => {
+        const teams: Team[] = res.data;
+        setAllTeams(teams);
+        if (teams.length > 0) {
+          const preferred = preferredId ? teams.find((t) => t._id === preferredId) : null;
+          setTeam(preferred ?? teams[0]);
+        }
+      }),
       userApi.getMe().then((res) => setCurrentUser(res.data)),
     ])
       .catch(console.error)
@@ -122,6 +133,19 @@ export default function RosterPage() {
       <TopBar title={team?.name ?? t('title')} />
 
       <div className="px-4 pt-4 safe-pb space-y-4">
+        {allTeams.length > 1 && team && (
+          <Select value={team._id} onValueChange={(id) => setTeam(allTeams.find((t) => t._id === id) ?? team)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {allTeams.map((t) => (
+                <SelectItem key={t._id} value={t._id}>{t.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+
         {!team ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">🏐</div>
@@ -354,5 +378,13 @@ export default function RosterPage() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+export default function RosterPage() {
+  return (
+    <Suspense>
+      <RosterPageContent />
+    </Suspense>
   );
 }

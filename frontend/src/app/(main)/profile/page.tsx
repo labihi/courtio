@@ -8,20 +8,20 @@ import { TopBar } from '@/components/layout/top-bar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { userApi } from '@/lib/api';
-import { User } from '@/types';
-import { ChevronRight, Trophy, Users, Settings, Shield } from 'lucide-react';
+import { userApi, teamApi } from '@/lib/api';
+import { User, Team } from '@/types';
+import { ChevronRight, Trophy, Users, Shield } from 'lucide-react';
 
 export default function ProfilePage() {
   const t = useTranslations('profile');
   const { user: clerkUser } = useUser();
   const [profile, setProfile] = useState<User | null>(null);
+  const [teams, setTeams] = useState<Team[]>([]);
 
   useEffect(() => {
     userApi.getMe().then((r) => setProfile(r.data)).catch(console.error);
+    teamApi.getMine().then((r) => setTeams(r.data)).catch(console.error);
   }, []);
-
-  const teamCount = profile?.teams?.length ?? 0;
 
   return (
     <div className="min-h-screen">
@@ -73,23 +73,44 @@ export default function ProfilePage() {
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </Link>
 
-          <Link
-            href="/roster"
-            className="flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <Users className="h-5 w-5 text-blue-400" />
+          {teams.length === 0 ? (
+            <Link
+              href="/roster?create=true"
+              className="flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <Users className="h-5 w-5 text-blue-400" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">{t('myTeam')}</p>
+                  <p className="text-xs text-muted-foreground">{t('myTeamCount', { count: 0 })}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-sm">{t('myTeam')}</p>
-                <p className="text-xs text-muted-foreground">
-                  {t('myTeamCount', { count: teamCount })}
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          </Link>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </Link>
+          ) : (
+            teams.map((team) => (
+              <Link
+                key={team._id}
+                href={`/roster?teamId=${team._id}`}
+                className="flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                    <Users className="h-5 w-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">{team.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {team.captain._id === profile?._id ? t('captainLabel') : t('playerLabel')} · {team.members.length} {t('playerLabel').toLowerCase()}
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </Link>
+            ))
+          )}
 
           {profile?.platformRole === 'admin' && (
             <Link
