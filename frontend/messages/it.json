@@ -110,17 +110,20 @@
   },
   "market": {
     "title": "Mercato",
-    "findSoloPlayers": "Trova Giocatori Singoli",
-    "description": "Sfoglia i giocatori che cercano una squadra per un torneo.",
-    "selectTournamentPlaceholder": "Seleziona torneo...",
+    "findPlayers": "Trova Giocatori Disponibili",
+    "description": "Sfoglia i giocatori non ancora in rosa per nessun torneo.",
+    "allTournaments": "Tutti i Tornei",
     "allRoles": "Tutti i Ruoli",
-    "noTournamentSelected": "Seleziona un torneo per sfogliare i giocatori disponibili.",
-    "noPlayers": "Nessun giocatore nella lista vuole-unirsi per questo ruolo.",
-    "inviteBtn": "Invita",
-    "inviteTitle": "Invita {name} nella Tua Squadra",
+    "noPlayers": "Nessun giocatore disponibile per questo filtro.",
+    "freeAgent": "Svincolato",
+    "available": "Disponibile",
+    "soloFor": "Solo @ {tournament}",
+    "addToTeamBtn": "Aggiungi alla Squadra",
+    "addToTeamTitle": "Aggiungi {name} alla Tua Squadra",
     "selectTeamPlaceholder": "Seleziona la tua squadra...",
+    "selectRolePlaceholder": "Seleziona un ruolo...",
     "cancelBtn": "Annulla",
-    "inviteConfirmBtn": "Invita"
+    "addToTeamConfirmBtn": "Aggiungi alla Squadra"
   },
   "admin": {
     "title": "Pannello Admin",
@@ -228,6 +231,9 @@
     "tournamentLabel": "Torneo",
     "selectTeamLabel": "Seleziona Squadra",
     "selectTeamPlaceholder": "Scegli una squadra...",
+    "selectRosterLabel": "Seleziona Rosa per il Torneo",
+    "rosterMinHint": "Seleziona almeno {min} giocatori per il formato {format}",
+    "rosterMembersSelected": "{count} selezionati (min {min})",
     "yourRoleLabel": "Il Tuo Ruolo",
     "selectRolePlaceholder": "Seleziona il tuo ruolo...",
     "cancelBtn": "Annulla",
@@ -268,7 +274,6 @@
     "MB": "Muro Centrale",
     "OPP": "Opposto",
     "SET": "Alzatore",
-    "LIB": "Libero",
-    "DS": "Specialista Difensivo"
+    "LIB": "Libero"
   }
 }
