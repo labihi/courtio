@@ -5,21 +5,29 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(amount: number): string {
+const LOCALE_MAP: Record<string, { intl: string; currency: string }> = {
+  it: { intl: 'it-IT', currency: 'EUR' },
+  en: { intl: 'en-US', currency: 'USD' },
+};
+
+const intl = (locale: string) => (LOCALE_MAP[locale] ?? LOCALE_MAP.en).intl;
+
+export function formatCurrency(amount: number, locale = 'en'): string {
   if (amount === 0) return 'Free';
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+  const { intl: intlLocale, currency } = LOCALE_MAP[locale] ?? LOCALE_MAP.en;
+  return new Intl.NumberFormat(intlLocale, { style: 'currency', currency }).format(amount);
 }
 
-export function formatDate(date: string | Date): string {
-  return new Intl.DateTimeFormat('en-US', {
+export function formatDate(date: string | Date, locale = 'en'): string {
+  return new Intl.DateTimeFormat(intl(locale), {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
   }).format(new Date(date));
 }
 
-export function formatDateTime(date: string | Date): string {
-  return new Intl.DateTimeFormat('en-US', {
+export function formatDateTime(date: string | Date, locale = 'en'): string {
+  return new Intl.DateTimeFormat(intl(locale), {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
