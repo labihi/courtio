@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Tournament, TournamentDocument, TournamentStatus } from './schemas/tournament.schema';
+import { Registration, RegistrationDocument, RegistrationStatus, RegistrationType } from '../registrations/schemas/registration.schema';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { UpdateTournamentDto } from './dto/update-tournament.dto';
 
@@ -9,6 +10,7 @@ import { UpdateTournamentDto } from './dto/update-tournament.dto';
 export class TournamentsService {
   constructor(
     @InjectModel(Tournament.name) private tournamentModel: Model<TournamentDocument>,
+    @InjectModel(Registration.name) private registrationModel: Model<RegistrationDocument>,
   ) {}
 
   private async geocodePlace(placeName: string, placeAddress: string): Promise<{ lat: number; lng: number } | null> {
@@ -123,6 +125,15 @@ export class TournamentsService {
       tournament.status = TournamentStatus.OPEN;
       await tournament.save();
     }
+    await this.registrationModel.updateMany(
+      {
+        tournament: new Types.ObjectId(tournamentId),
+        team: new Types.ObjectId(teamId),
+        type: RegistrationType.TEAM,
+        status: { $ne: RegistrationStatus.CANCELLED },
+      },
+      { status: RegistrationStatus.CANCELLED },
+    );
     return tournament;
   }
 }
