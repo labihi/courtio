@@ -16,6 +16,14 @@ const nextConfig = {
       { protocol: 'https', hostname: 'api.mapbox.com' },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [{ key: 'Cache-Control', value: 'no-store' }],
+      },
+    ];
+  },
 };
 
 module.exports = withNextIntl(nextConfig);
