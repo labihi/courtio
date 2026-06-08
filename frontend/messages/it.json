@@ -270,6 +270,12 @@
     "cancelBtn": "Annulla",
     "removeBtn": "Rimuovi"
   },
+  "notifications": {
+    "bellLabel": "Notifiche",
+    "panelTitle": "Notifiche",
+    "allRead": "Tutte lette",
+    "empty": "Nessuna notifica"
+  },
   "tournamentCard": {
     "majorChampionship": "Campionato Maggiore",
     "remainingSlots": "Posti Rimanenti",

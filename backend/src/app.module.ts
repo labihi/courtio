@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { TournamentsModule } from './tournaments/tournaments.module';
 import { TeamsModule } from './teams/teams.module';
 import { RegistrationsModule } from './registrations/registrations.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -23,6 +24,7 @@ import { HealthController } from './health.controller';
     TournamentsModule,
     TeamsModule,
     RegistrationsModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}

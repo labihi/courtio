@@ -145,8 +145,10 @@ export class TeamsService {
     requesterId: string,
   ): Promise<TeamDocument> {
     const team = await this.findById(teamId);
-    if ((team.captain as any)._id.toString() !== requesterId) {
-      throw new ForbiddenException('Only the captain can transfer captaincy');
+    const isCaptain = (team.captain as any)._id.toString() === requesterId;
+    const admin = await this.isAdmin(requesterId);
+    if (!isCaptain && !admin) {
+      throw new ForbiddenException('Only the captain or an admin can transfer captaincy');
     }
     const isMember = team.members.some(
       (m) => ((m.user as any)._id ?? m.user).toString() === dto.userId,

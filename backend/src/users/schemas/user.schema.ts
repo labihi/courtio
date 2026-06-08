@@ -37,6 +37,22 @@ export class User {
 
   @Prop({ type: [Types.ObjectId], ref: 'Team', default: [] })
   captainOf: Types.ObjectId[];
+
+  @Prop({
+    type: [
+      {
+        endpoint: String,
+        expirationTime: Number,
+        keys: { auth: String, p256dh: String },
+      },
+    ],
+    default: [],
+  })
+  pushSubscriptions: {
+    endpoint: string;
+    expirationTime?: number | null;
+    keys: { auth: string; p256dh: string };
+  }[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -5,12 +5,15 @@ import { Tournament, TournamentDocument, TournamentStatus } from './schemas/tour
 import { Registration, RegistrationDocument, RegistrationStatus, RegistrationType } from '../registrations/schemas/registration.schema';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { UpdateTournamentDto } from './dto/update-tournament.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/schemas/notification.schema';
 
 @Injectable()
 export class TournamentsService {
   constructor(
     @InjectModel(Tournament.name) private tournamentModel: Model<TournamentDocument>,
     @InjectModel(Registration.name) private registrationModel: Model<RegistrationDocument>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   private async geocodePlace(placeName: string, placeAddress: string): Promise<{ lat: number; lng: number } | null> {
@@ -32,11 +35,20 @@ export class TournamentsService {
 
   async create(dto: CreateTournamentDto, organizerId: string): Promise<TournamentDocument> {
     const coords = await this.geocodePlace(dto.place.placeName, dto.place.placeAddress);
-    return this.tournamentModel.create({
+    const tournament = await this.tournamentModel.create({
       ...dto,
       place: { ...dto.place, ...coords },
       organizers: [new Types.ObjectId(organizerId)],
     });
+    this.notificationsService
+      .notifyAll(
+        NotificationType.TOURNAMENT_CREATED,
+        `New tournament: ${tournament.name}`,
+        `A new tournament has been created. Join now before spots fill up!`,
+        { tournamentId: tournament._id.toString() },
+      )
+      .catch(() => {});
+    return tournament;
   }
 
   async findAll(filters?: { status?: TournamentStatus }): Promise<TournamentDocument[]> {
@@ -97,7 +109,19 @@ export class TournamentsService {
     if (tournament.registeredTeams.length >= tournament.maxTeamSlots) {
       tournament.status = TournamentStatus.FULL;
     }
-    return tournament.save();
+    const saved = await tournament.save();
+    const slotsLeft = tournament.maxTeamSlots - tournament.registeredTeams.length;
+    if (slotsLeft === 3) {
+      this.notificationsService
+        .notifyAll(
+          NotificationType.TOURNAMENT_FILLING,
+          `${tournament.name} is almost full!`,
+          `Only 3 team slots remaining. Register now before it's too late!`,
+          { tournamentId: tournament._id.toString() },
+        )
+        .catch(() => {});
+    }
+    return saved;
   }
 
   async addSoloRegistration(tournamentId: string, registrationId: Types.ObjectId): Promise<void> {

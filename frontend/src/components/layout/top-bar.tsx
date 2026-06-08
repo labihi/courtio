@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { UserButton } from '@clerk/nextjs';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { NotificationBell } from '@/components/notifications/notification-bell';
 
 interface TopBarProps {
   title?: string;
@@ -37,6 +38,7 @@ export function TopBar({ title, showBack, backHref, actions }: TopBarProps) {
               </Link>
             </Button>
           )}
+          <NotificationBell />
           <UserButton />
         </div>
       </div>

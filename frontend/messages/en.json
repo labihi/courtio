@@ -270,6 +270,12 @@
     "cancelBtn": "Cancel",
     "removeBtn": "Remove"
   },
+  "notifications": {
+    "bellLabel": "Notifications",
+    "panelTitle": "Notifications",
+    "allRead": "All read",
+    "empty": "No notifications yet"
+  },
   "tournamentCard": {
     "majorChampionship": "Major Championship",
     "remainingSlots": "Remaining Slots",

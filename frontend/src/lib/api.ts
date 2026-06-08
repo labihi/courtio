@@ -89,6 +89,14 @@ export const registrationApi = {
   updateRoster: (id: string, roster: string[]) => api.patch(`/registrations/${id}/roster`, { roster }),
 };
 
+export const notificationsApi = {
+  getAll: () => api.get('/notifications'),
+  markRead: (id: string) => api.patch(`/notifications/${id}/read`),
+  markAllRead: () => api.patch('/notifications/read-all'),
+  subscribe: (subscription: object) => api.post('/notifications/subscribe', subscription),
+  unsubscribe: (endpoint: string) => api.delete('/notifications/subscribe', { data: { endpoint } }),
+};
+
 export const userApi = {
   getMe: () => api.get('/users/me'),
   updateMe: (data: unknown) => api.patch('/users/me', data),

@@ -6,6 +6,7 @@ import { Tournament, TournamentSchema } from './schemas/tournament.schema';
 import { Registration, RegistrationSchema } from '../registrations/schemas/registration.schema';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UsersModule } from '../users/users.module';
     ]),
     AuthModule,
     UsersModule,
+    NotificationsModule,
   ],
   providers: [TournamentsService],
   controllers: [TournamentsController],
