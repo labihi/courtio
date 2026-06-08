@@ -3,8 +3,8 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title ?? 'Courtio', {
       body: data.body ?? '',
-      icon: '/icon-192.png',
-      badge: '/icon-192.png',
+      icon: '/icon.svg',
+      badge: '/icon.svg',
       data: data.data ?? {},
       vibrate: [200, 100, 200],
     })

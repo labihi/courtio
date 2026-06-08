@@ -5,6 +5,7 @@ import { UserButton } from '@clerk/nextjs';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notifications/notification-bell';
+import { Logo } from '@/components/logo';
 
 interface TopBarProps {
   title?: string;
@@ -25,9 +26,15 @@ export function TopBar({ title, showBack, backHref, actions }: TopBarProps) {
           </Link>
         )}
 
-        <span className="flex-1 font-bold text-lg text-primary">
-          {title || 'Courtio'}
-        </span>
+        <div className="flex-1">
+          {title ? (
+            <span className="font-bold text-lg">{title}</span>
+          ) : (
+            <Link href="/discover" aria-label="Courtio home">
+              <Logo size="sm" />
+            </Link>
+          )}
+        </div>
 
         <div className="flex items-center gap-2">
           {actions}
