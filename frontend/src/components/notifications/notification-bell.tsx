@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, BellOff } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { notificationsApi } from '@/lib/api';
+import { usePushNotifications } from '@/hooks/use-push-notifications';
 import { cn } from '@/lib/utils';
 
 interface AppNotification {
@@ -23,6 +23,7 @@ export function NotificationBell() {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const panelRef = useRef<HTMLDivElement>(null);
+  const { permission, requestPermission } = usePushNotifications();
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -85,6 +86,27 @@ export function NotificationBell() {
               <span className="text-xs text-muted-foreground">{t('allRead')}</span>
             )}
           </div>
+
+          {/* Push permission prompt */}
+          {permission === 'default' && (
+            <button
+              onClick={requestPermission}
+              className="w-full flex items-center gap-3 px-4 py-3 border-b border-border bg-primary/5 hover:bg-primary/10 transition-colors text-left"
+            >
+              <Bell className="h-4 w-4 text-primary shrink-0" />
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-primary">{t('enablePush')}</p>
+                <p className="text-[11px] text-muted-foreground">{t('enablePushHint')}</p>
+              </div>
+            </button>
+          )}
+
+          {permission === 'denied' && (
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-secondary/30">
+              <BellOff className="h-4 w-4 text-muted-foreground shrink-0" />
+              <p className="text-[11px] text-muted-foreground">{t('pushDenied')}</p>
+            </div>
+          )}
 
           {notifications.length === 0 ? (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">

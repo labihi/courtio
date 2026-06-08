@@ -274,7 +274,10 @@
     "bellLabel": "Notifiche",
     "panelTitle": "Notifiche",
     "allRead": "Tutte lette",
-    "empty": "Nessuna notifica"
+    "empty": "Nessuna notifica",
+    "enablePush": "Abilita notifiche push",
+    "enablePushHint": "Tocca per ricevere avvisi sui nuovi tornei",
+    "pushDenied": "Le notifiche push sono bloccate. Abilitale nelle impostazioni del browser."
   },
   "tournamentCard": {
     "majorChampionship": "Campionato Maggiore",

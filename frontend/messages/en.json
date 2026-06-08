@@ -274,7 +274,10 @@
     "bellLabel": "Notifications",
     "panelTitle": "Notifications",
     "allRead": "All read",
-    "empty": "No notifications yet"
+    "empty": "No notifications yet",
+    "enablePush": "Enable push notifications",
+    "enablePushHint": "Tap to receive alerts for new tournaments",
+    "pushDenied": "Push notifications are blocked. Enable them in your browser settings."
   },
   "tournamentCard": {
     "majorChampionship": "Major Championship",
