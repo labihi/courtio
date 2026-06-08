@@ -1,5 +1,6 @@
 import { SignUp } from '@clerk/nextjs';
 import { getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 import { Logo } from '@/components/logo';
 
 export default async function SignUpPage() {
@@ -13,6 +14,13 @@ export default async function SignUpPage() {
           <p className="text-muted-foreground text-sm">{t('tagline')}</p>
         </div>
         <SignUp forceRedirectUrl="/discover" />
+        <p className="text-center text-xs text-muted-foreground mt-4">
+          By signing up you agree to our{' '}
+          <Link href="/privacy" className="underline hover:text-foreground transition-colors">
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );
