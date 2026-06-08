@@ -1,3 +1,6 @@
+import { NextResponse } from 'next/server';
+
+const SW_CONTENT = `
 self.addEventListener('push', (event) => {
   const data = event.data?.json() ?? {};
   event.waitUntil(
@@ -14,7 +17,7 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const tournamentId = event.notification.data?.tournamentId;
-  const url = tournamentId ? `/tournaments/${tournamentId}` : '/discover';
+  const url = tournamentId ? '/tournaments/' + tournamentId : '/discover';
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
       for (const client of windowClients) {
@@ -24,3 +27,13 @@ self.addEventListener('notificationclick', (event) => {
     })
   );
 });
+`.trim();
+
+export function GET() {
+  return new NextResponse(SW_CONTENT, {
+    headers: {
+      'Content-Type': 'application/javascript',
+      'Cache-Control': 'no-store',
+    },
+  });
+}

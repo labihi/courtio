@@ -12,7 +12,6 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 export const metadata: Metadata = {
   title: 'Courtio – Volleyball Tournament Platform',
   description: 'Discover, join, and organize volleyball tournaments.',
-  manifest: '/manifest.json',
   appleWebApp: { capable: true, statusBarStyle: 'black-translucent' },
 };
 
