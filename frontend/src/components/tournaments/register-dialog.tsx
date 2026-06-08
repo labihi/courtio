@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Check } from 'lucide-react';
+import { Check, Info } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -40,6 +41,14 @@ export function RegisterDialog({ tournament, type, open, onOpenChange }: Registe
   const [done, setDone] = useState(false);
 
   const minRoster = FORMAT_MIN_ROSTER[tournament.format] ?? 6;
+  const registeredTeamIds = useMemo(
+    () => new Set(tournament.registeredTeams.map((t) => t._id)),
+    [tournament.registeredTeams],
+  );
+  const hasAnyRegisteredTeam = useMemo(
+    () => myTeams.some((t) => registeredTeamIds.has(t._id)),
+    [myTeams, registeredTeamIds],
+  );
 
   useEffect(() => {
     if (type === 'team') {
@@ -92,7 +101,7 @@ export function RegisterDialog({ tournament, type, open, onOpenChange }: Registe
 
   const canSubmit = type === 'solo'
     ? !!selectedRole
-    : !!selectedTeam && selectedRoster.length >= minRoster;
+    : !!selectedTeam && !registeredTeamIds.has(selectedTeam) && selectedRoster.length >= minRoster;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -137,12 +146,29 @@ export function RegisterDialog({ tournament, type, open, onOpenChange }: Registe
                         <SelectValue placeholder={t('selectTeamPlaceholder')} />
                       </SelectTrigger>
                       <SelectContent>
-                        {myTeams.map((team) => (
-                          <SelectItem key={team._id} value={team._id}>{team.name}</SelectItem>
-                        ))}
+                        {myTeams.map((team) => {
+                          const alreadyIn = registeredTeamIds.has(team._id);
+                          return (
+                            <SelectItem key={team._id} value={team._id} disabled={alreadyIn}>
+                              {team.name}{alreadyIn ? ` ${t('alreadyRegisteredSuffix')}` : ''}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {hasAnyRegisteredTeam && (
+                    <div className="flex items-start gap-2 rounded-lg bg-primary/5 border border-primary/20 px-3 py-2.5 text-xs text-muted-foreground">
+                      <Info className="h-3.5 w-3.5 shrink-0 mt-0.5 text-primary" />
+                      <span>
+                        {t('alreadyRegisteredTip')}{' '}
+                        <Link href="/roster" className="text-primary underline underline-offset-2 font-medium" onClick={() => onOpenChange(false)}>
+                          {t('alreadyRegisteredLink')}
+                        </Link>.
+                      </span>
+                    </div>
+                  )}
 
                   {currentTeam && (
                     <div>

@@ -226,7 +226,9 @@
     "registrationCloses": "Le iscrizioni chiudono il {date} o a esaurimento.",
     "registrationClosesFull": "Le iscrizioni chiudono a esaurimento posti.",
     "urgentSlots": "{count, plural, one {URGENTE: Solo # posto squadra rimasto! {registered} squadre già iscritte.} other {URGENTE: Solo # posti squadra rimasti! {registered} squadre già iscritte.}}",
-    "indoorPro": "Indoor Pro"
+    "indoorPro": "Indoor Pro",
+    "registeredTeamsTitle": "Squadre Iscritte",
+    "playersCount": "{count, plural, one {# giocatore} other {# giocatori}}"
   },
   "registerDialog": {
     "registerAsTeamTitle": "Registrati come Squadra",
@@ -246,7 +248,10 @@
     "successTeamTitle": "Squadra registrata!",
     "successSoloDescription": "I capitani possono ora invitarti nella loro squadra.",
     "successTeamDescription": "La tua squadra è iscritta a {tournamentName}",
-    "doneBtn": "Fatto"
+    "doneBtn": "Fatto",
+    "alreadyRegisteredSuffix": "(Già registrata)",
+    "alreadyRegisteredTip": "Hai già registrato una squadra? Gestisci la rosa del torneo in",
+    "alreadyRegisteredLink": "Gestione Squadra"
   },
   "tacticalView": {
     "title": "Vista Tattica Rosa",

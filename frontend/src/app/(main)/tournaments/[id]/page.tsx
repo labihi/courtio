@@ -3,29 +3,91 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { MapPin, Calendar, Zap, Share2, Users } from 'lucide-react';
+import { MapPin, Calendar, Zap, Share2, Users, ChevronDown } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { TopBar } from '@/components/layout/top-bar';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { RegisterDialog } from '@/components/tournaments/register-dialog';
 import { MapView } from '@/components/tournaments/map-view';
-import { tournamentApi } from '@/lib/api';
-import { Tournament } from '@/types';
-import { formatDateTime, formatCurrency } from '@/lib/utils';
+import { tournamentApi, registrationApi } from '@/lib/api';
+import { Team, Tournament } from '@/types';
+import { formatDateTime, formatCurrency, cn } from '@/lib/utils';
+
+function TeamCard({ team, rosterIds }: { team: Team; rosterIds: Set<string> }) {
+  const t = useTranslations('tournament');
+  const [expanded, setExpanded] = useState(false);
+
+  const displayMembers = rosterIds.size > 0
+    ? team.members.filter((m) => rosterIds.has(m.user._id))
+    : team.members;
+
+  return (
+    <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <button
+        className="w-full flex items-center justify-between p-3 gap-3 text-left"
+        onClick={() => setExpanded((v) => !v)}
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <Avatar className="h-9 w-9 shrink-0">
+            <AvatarImage src={team.avatar} />
+            <AvatarFallback className="text-xs">{team.name[0]}</AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            <p className="font-semibold text-sm truncate">{team.name}</p>
+            <p className="text-xs text-muted-foreground">{t('playersCount', { count: displayMembers.length })}</p>
+          </div>
+        </div>
+        <ChevronDown className={cn('h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-200', expanded && 'rotate-180')} />
+      </button>
+
+      {expanded && (
+        <div className="border-t border-border divide-y divide-border">
+          {displayMembers.map((member, i) => (
+            <div key={i} className="flex items-center gap-3 px-3 py-2.5">
+              <Avatar className="h-7 w-7 shrink-0">
+                <AvatarImage src={member.user.avatar} />
+                <AvatarFallback className="text-[9px]">
+                  {member.user.firstName?.[0]}{member.user.lastName?.[0]}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-sm flex-1 truncate">{member.user.firstName} {member.user.lastName}</span>
+              {member.role && (
+                <Badge variant="outline" className="text-[10px] shrink-0">{member.role}</Badge>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function TournamentDetailPage() {
   const t = useTranslations('tournament');
   const locale = useLocale();
   const { id } = useParams<{ id: string }>();
   const [tournament, setTournament] = useState<Tournament | null>(null);
+  const [rosterMap, setRosterMap] = useState<Map<string, Set<string>>>(new Map());
   const [loading, setLoading] = useState(true);
   const [registerOpen, setRegisterOpen] = useState(false);
   const [registerType, setRegisterType] = useState<'team' | 'solo'>('solo');
 
   useEffect(() => {
-    tournamentApi
-      .getById(id)
-      .then((res) => setTournament(res.data))
+    Promise.all([
+      tournamentApi.getById(id).then((res) => setTournament(res.data)),
+      registrationApi.getByTournament(id).then((res) => {
+        const map = new Map<string, Set<string>>();
+        for (const reg of res.data) {
+          const teamId = typeof reg.team === 'object' ? reg.team?._id : reg.team;
+          if (teamId && reg.roster?.length) {
+            map.set(String(teamId), new Set(reg.roster.map((uid: any) => String(uid))));
+          }
+        }
+        setRosterMap(map);
+      }),
+    ])
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [id]);
@@ -147,6 +209,19 @@ export default function TournamentDetailPage() {
           <span>{t('entryFee', { price: formatCurrency(tournament.price, locale) })}</span>
           <span>{t('slotsRemaining', { remaining: spotsLeft, max: tournament.maxTeamSlots })}</span>
         </div>
+
+        {tournament.registeredTeams && tournament.registeredTeams.length > 0 && (
+          <div>
+            <h2 className="font-bold text-lg border-l-4 border-primary pl-3 mb-3">
+              {t('registeredTeamsTitle')} ({tournament.registeredTeams.length})
+            </h2>
+            <div className="space-y-2">
+              {tournament.registeredTeams.map((team) => (
+                <TeamCard key={team._id} team={team} rosterIds={rosterMap.get(team._id) ?? new Set()} />
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="space-y-3 pt-2">
           <Button

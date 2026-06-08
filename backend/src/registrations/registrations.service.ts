@@ -197,7 +197,11 @@ export class RegistrationsService {
 
   async getTournamentRegistrations(tournamentId: string): Promise<RegistrationDocument[]> {
     return this.regModel
-      .find({ tournament: new Types.ObjectId(tournamentId) })
+      .find({
+        tournament: new Types.ObjectId(tournamentId),
+        type: RegistrationType.TEAM,
+        status: { $ne: RegistrationStatus.CANCELLED },
+      })
       .populate('player', 'firstName lastName avatar volleyballRoles')
       .populate('team', 'name captain')
       .exec();

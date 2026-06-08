@@ -226,7 +226,9 @@
     "registrationCloses": "Registration closes {date} or when full.",
     "registrationClosesFull": "Registration closes when full.",
     "urgentSlots": "{count, plural, one {URGENT: Only # team slot left! {registered} teams already registered.} other {URGENT: Only # team slots left! {registered} teams already registered.}}",
-    "indoorPro": "Indoor Pro"
+    "indoorPro": "Indoor Pro",
+    "registeredTeamsTitle": "Registered Teams",
+    "playersCount": "{count, plural, one {# player} other {# players}}"
   },
   "registerDialog": {
     "registerAsTeamTitle": "Register as Team",
@@ -246,7 +248,10 @@
     "successTeamTitle": "Team registered!",
     "successSoloDescription": "Captains can now invite you to their team.",
     "successTeamDescription": "Your team is registered for {tournamentName}",
-    "doneBtn": "Done"
+    "doneBtn": "Done",
+    "alreadyRegisteredSuffix": "(Already registered)",
+    "alreadyRegisteredTip": "Already registered a team? Manage the tournament roster in",
+    "alreadyRegisteredLink": "Team Management"
   },
   "tacticalView": {
     "title": "Tactical Roster View",
