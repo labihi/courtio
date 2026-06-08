@@ -136,6 +136,26 @@ export class TournamentsService {
     });
   }
 
+  async removeTeamSlot(tournamentId: string, teamId: string): Promise<void> {
+    const tournament = await this.tournamentModel
+      .findByIdAndUpdate(
+        tournamentId,
+        { $pull: { registeredTeams: new Types.ObjectId(teamId) } },
+        { new: true },
+      )
+      .exec();
+    if (
+      tournament &&
+      tournament.status === TournamentStatus.FULL &&
+      tournament.registeredTeams.length < tournament.maxTeamSlots
+    ) {
+      await this.tournamentModel.updateOne(
+        { _id: tournament._id },
+        { status: TournamentStatus.OPEN },
+      );
+    }
+  }
+
   async removeTeam(tournamentId: string, teamId: string): Promise<TournamentDocument> {
     const tournament = await this.tournamentModel
       .findByIdAndUpdate(

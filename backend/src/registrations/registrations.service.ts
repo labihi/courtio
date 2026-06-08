@@ -81,6 +81,12 @@ export class RegistrationsService {
     });
     if (existing) throw new BadRequestException('Team already registered for this tournament');
 
+    // addTeam first so we never leave an orphaned Registration if it throws
+    await this.tournamentsService.addTeam(
+      dto.tournamentId,
+      new Types.ObjectId(dto.teamId),
+    );
+
     const registration = await this.regModel.create({
       tournament: new Types.ObjectId(dto.tournamentId),
       type: RegistrationType.TEAM,
@@ -90,11 +96,6 @@ export class RegistrationsService {
       role: dto.role,
       status: RegistrationStatus.REGISTERED,
     });
-
-    await this.tournamentsService.addTeam(
-      dto.tournamentId,
-      new Types.ObjectId(dto.teamId),
-    );
 
     return registration;
   }
@@ -221,13 +222,26 @@ export class RegistrationsService {
       throw new BadRequestException('Cannot cancel another user\'s registration');
     }
     reg.status = RegistrationStatus.CANCELLED;
-    return reg.save();
+    await reg.save();
+    if (reg.type === RegistrationType.TEAM && reg.team && reg.tournament) {
+      await this.tournamentsService.removeTeamSlot(
+        reg.tournament.toString(),
+        reg.team.toString(),
+      );
+    }
+    return reg;
   }
 
   async deleteRegistration(registrationId: string): Promise<void> {
     const reg = await this.regModel.findByIdAndDelete(registrationId);
     if (!reg) throw new NotFoundException('Registration not found');
-    if (reg.tournament) {
+    if (!reg.tournament) return;
+    if (reg.type === RegistrationType.TEAM && reg.team) {
+      await this.tournamentsService.removeTeamSlot(
+        reg.tournament.toString(),
+        reg.team.toString(),
+      );
+    } else {
       await this.tournamentsService.removeSoloRegistration(
         reg.tournament.toString(),
         reg._id as Types.ObjectId,
