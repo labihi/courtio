@@ -251,7 +251,14 @@
   "tacticalView": {
     "title": "Tactical Roster View",
     "filledBadge": "{filled}/{total} Filled",
-    "recruitLabel": "Recruit {role}"
+    "recruitLabel": "Recruit {role}",
+    "teamRoster": "Team Roster",
+    "addToRoster": "Add to Roster — {role}",
+    "noBenchPlayers": "No bench players available for this role",
+    "removeFromRoster": "Remove from Roster",
+    "removeConfirm": "Remove {name} from the tournament roster?",
+    "cancelBtn": "Cancel",
+    "removeBtn": "Remove"
   },
   "tournamentCard": {
     "majorChampionship": "Major Championship",

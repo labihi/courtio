@@ -4,12 +4,25 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Team, VolleyballRole } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Team, TeamMember, VolleyballRole, User } from '@/types';
 import { cn } from '@/lib/utils';
+
+export interface TournamentRegInfo {
+  registrationId: string;
+  tournamentName: string;
+  tournamentDate: string;
+  roster: User[];
+  rosterIds: string[]; // pre-coerced to string to avoid ObjectId vs string mismatch
+}
 
 interface TacticalViewProps {
   team: Team;
   onRecruitSlot?: (role: VolleyballRole) => void;
+  tournamentRegistrations?: TournamentRegInfo[];
+  onRosterChange?: (registrationId: string, newRosterIds: string[]) => Promise<void>;
 }
 
 const COURT_POSITIONS: { role: VolleyballRole; label: string; gridArea: string; special?: boolean }[] = [
@@ -27,55 +40,119 @@ const SLOTS_PER_ROLE = COURT_POSITIONS.reduce<Partial<Record<VolleyballRole, num
   {},
 );
 
-export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
+export function TacticalView({ team, onRecruitSlot, tournamentRegistrations, onRosterChange }: TacticalViewProps) {
   const t = useTranslations('tacticalView');
   const [popupRole, setPopupRole] = useState<VolleyballRole | null>(null);
+  const [selectedRegId, setSelectedRegId] = useState<string | null>(null);
+  const [benchRole, setBenchRole] = useState<VolleyballRole | null>(null);
+  const [removeTarget, setRemoveTarget] = useState<TeamMember | null>(null);
 
-  const filledCount = team.members.filter((m) => m.status === 'ACTIVE').length;
+  const selectedReg = tournamentRegistrations?.find((r) => r.registrationId === selectedRegId) ?? null;
+  const rosterIds = new Set(selectedReg?.rosterIds ?? []);
+
+  const filledCount = selectedReg
+    ? selectedReg.roster.length
+    : team.members.filter((m) => m.status === 'ACTIVE').length;
   const totalSlots = 7;
 
+  // Full team role map
   const roleToMembers: Partial<Record<VolleyballRole, typeof team.members>> = {};
   for (const member of team.members) {
     if (member.role) {
       roleToMembers[member.role] = [...(roleToMembers[member.role] ?? []), member];
     }
   }
-
   const roleOverflow: Partial<Record<VolleyballRole, number>> = {};
   for (const role of Object.keys(SLOTS_PER_ROLE) as VolleyballRole[]) {
     const count = roleToMembers[role]?.length ?? 0;
-    const slots = SLOTS_PER_ROLE[role] ?? 1;
-    roleOverflow[role] = Math.max(0, count - slots);
+    roleOverflow[role] = Math.max(0, count - (SLOTS_PER_ROLE[role] ?? 1));
   }
+
+  // Tournament roster role map
+  const tournamentRoleToMembers: Partial<Record<VolleyballRole, typeof team.members>> = {};
+  const tournamentRoleOverflow: Partial<Record<VolleyballRole, number>> = {};
+  if (selectedReg) {
+    for (const member of team.members) {
+      if (rosterIds.has(member.user._id) && member.role) {
+        tournamentRoleToMembers[member.role] = [...(tournamentRoleToMembers[member.role] ?? []), member];
+      }
+    }
+    for (const role of Object.keys(SLOTS_PER_ROLE) as VolleyballRole[]) {
+      const count = tournamentRoleToMembers[role]?.length ?? 0;
+      tournamentRoleOverflow[role] = Math.max(0, count - (SLOTS_PER_ROLE[role] ?? 1));
+    }
+  }
+
+  const activeRoleToMembers = selectedReg ? tournamentRoleToMembers : roleToMembers;
+  const activeRoleOverflow = selectedReg ? tournamentRoleOverflow : roleOverflow;
+
+  // Team members with a given role not yet in the tournament roster
+  const getBench = (role: VolleyballRole) =>
+    team.members.filter((m) => m.role === role && !rosterIds.has(m.user._id));
+
+  const benchMembers = benchRole ? getBench(benchRole) : [];
+
+  const handleAddToRoster = async (member: TeamMember) => {
+    if (!selectedReg) return;
+    const newRosterIds = [...selectedReg.rosterIds, member.user._id];
+    await onRosterChange?.(selectedReg.registrationId, newRosterIds);
+    setBenchRole(null);
+  };
+
+  const handleRemoveFromRoster = async () => {
+    if (!selectedReg || !removeTarget) return;
+    const newRosterIds = selectedReg.rosterIds.filter((id) => id !== removeTarget.user._id);
+    await onRosterChange?.(selectedReg.registrationId, newRosterIds);
+    setRemoveTarget(null);
+  };
 
   const usedByRole: Partial<Record<VolleyballRole, number>> = {};
 
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-primary">
-          {t('title')}
-        </h3>
-        <Badge
-          variant={filledCount >= totalSlots ? 'success' : 'default'}
-          className="text-xs"
-        >
-          {t('filledBadge', { filled: filledCount, total: totalSlots })}
-        </Badge>
+      <div className="mb-3 space-y-2">
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-primary">
+            {t('title')}
+          </h3>
+          <Badge
+            variant={filledCount >= totalSlots ? 'success' : 'default'}
+            className="text-xs"
+          >
+            {t('filledBadge', { filled: filledCount, total: totalSlots })}
+          </Badge>
+        </div>
+
+        {tournamentRegistrations && tournamentRegistrations.length > 0 && (
+          <Select
+            value={selectedRegId ?? 'team'}
+            onValueChange={(v) => setSelectedRegId(v === 'team' ? null : v)}
+          >
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="team">{t('teamRoster')}</SelectItem>
+              {tournamentRegistrations.map((reg) => (
+                <SelectItem key={reg.registrationId} value={reg.registrationId}>
+                  {reg.tournamentName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
 
       <div className="relative bg-secondary/30 rounded-lg p-4 grid grid-cols-3 grid-rows-3 gap-3 aspect-[3/4]">
         <div className="absolute inset-0 rounded-lg border-2 border-border/30 pointer-events-none" />
-        {/* half-court line between front and back row */}
         <div className="absolute top-1/3 inset-x-4 h-px bg-border/30 pointer-events-none" />
-        {/* libero separator */}
         <div className="absolute top-2/3 inset-x-4 border-t border-dashed border-amber-400/40 pointer-events-none" />
 
         {COURT_POSITIONS.map((pos, idx) => {
-          const roleMembers = roleToMembers[pos.role] ?? [];
+          const roleMembers = activeRoleToMembers[pos.role] ?? [];
           const used = usedByRole[pos.role] ?? 0;
           const member = roleMembers[used];
-          const overflow = roleOverflow[pos.role] ?? 0;
+          const overflow = activeRoleOverflow[pos.role] ?? 0;
           usedByRole[pos.role] = used + 1;
 
           const special = pos.special ?? false;
@@ -109,12 +186,22 @@ export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
                 </div>
               ) : member ? (
                 <div className="flex flex-col items-center gap-0.5">
-                  <Avatar className={cn('h-11 w-11 ring-2', ringClass)}>
-                    <AvatarImage src={member.user.avatar} />
-                    <AvatarFallback className="text-xs">
-                      {member.user.firstName[0]}{member.user.lastName[0]}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="relative">
+                    <Avatar className={cn('h-11 w-11 ring-2', ringClass)}>
+                      <AvatarImage src={member.user.avatar} />
+                      <AvatarFallback className="text-xs">
+                        {member.user.firstName[0]}{member.user.lastName[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    {selectedReg && (
+                      <button
+                        onClick={() => setRemoveTarget(member)}
+                        className="absolute -top-1 -left-1 h-4 w-4 rounded-full bg-destructive text-white text-[9px] font-bold flex items-center justify-center ring-1 ring-background hover:bg-destructive/80 transition-colors"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
                   <span className="text-[10px] font-medium truncate max-w-[60px] text-center leading-tight">
                     {member.user.firstName} {member.user.lastName}
                   </span>
@@ -124,7 +211,7 @@ export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
                 </div>
               ) : (
                 <button
-                  onClick={() => onRecruitSlot?.(pos.role)}
+                  onClick={() => selectedReg ? setBenchRole(pos.role) : onRecruitSlot?.(pos.role)}
                   className="flex flex-col items-center gap-1 group"
                 >
                   <div className={cn('h-11 w-11 rounded-full border-2 border-dashed flex items-center justify-center transition-colors', special ? 'border-amber-400/40 group-hover:border-amber-400' : 'border-border group-hover:border-primary')}>
@@ -158,7 +245,7 @@ export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
                 </button>
               </div>
               <div className="space-y-2">
-                {(roleToMembers[popupRole] ?? []).map((m, i) => (
+                {(activeRoleToMembers[popupRole] ?? []).map((m, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <Avatar className="h-7 w-7">
                       <AvatarImage src={m.user.avatar} />
@@ -174,6 +261,60 @@ export function TacticalView({ team, onRecruitSlot }: TacticalViewProps) {
           </div>
         )}
       </div>
+
+      {/* Add to tournament roster */}
+      <Dialog open={benchRole !== null} onOpenChange={(open) => !open && setBenchRole(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('addToRoster', { role: benchRole ?? '' })}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-1 py-2">
+            {benchMembers.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                {t('noBenchPlayers')}
+              </p>
+            ) : (
+              benchMembers.map((member, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleAddToRoster(member)}
+                  className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-secondary transition-colors text-left"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={member.user.avatar} />
+                    <AvatarFallback className="text-xs">
+                      {member.user.firstName[0]}{member.user.lastName[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-medium">
+                    {member.user.firstName} {member.user.lastName}
+                  </span>
+                </button>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove from tournament roster */}
+      <Dialog open={removeTarget !== null} onOpenChange={(open) => !open && setRemoveTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('removeFromRoster')}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground py-2">
+            {t('removeConfirm', { name: `${removeTarget?.user.firstName} ${removeTarget?.user.lastName}` })}
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRemoveTarget(null)}>
+              {t('cancelBtn')}
+            </Button>
+            <Button variant="destructive" onClick={handleRemoveFromRoster}>
+              {t('removeBtn')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

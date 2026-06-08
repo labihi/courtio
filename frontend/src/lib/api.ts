@@ -82,8 +82,10 @@ export const registrationApi = {
   getWantToJoin: (tournamentId: string) =>
     api.get(`/registrations/tournament/${tournamentId}/want-to-join`),
   getMyRegistrations: () => api.get('/registrations/me'),
+  getTeamRegistrations: (teamId: string) => api.get(`/registrations/team/${teamId}`),
   cancel: (id: string) => api.patch(`/registrations/${id}/cancel`),
   deleteRegistration: (id: string) => api.delete(`/registrations/${id}`),
+  updateRoster: (id: string, roster: string[]) => api.patch(`/registrations/${id}/roster`, { roster }),
 };
 
 export const userApi = {

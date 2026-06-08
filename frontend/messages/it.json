@@ -251,7 +251,14 @@
   "tacticalView": {
     "title": "Vista Tattica Rosa",
     "filledBadge": "{filled}/{total} Occupati",
-    "recruitLabel": "Recluta {role}"
+    "recruitLabel": "Recluta {role}",
+    "teamRoster": "Rosa Squadra",
+    "addToRoster": "Aggiungi alla Rosa — {role}",
+    "noBenchPlayers": "Nessun giocatore in panchina per questo ruolo",
+    "removeFromRoster": "Rimuovi dalla Rosa",
+    "removeConfirm": "Rimuovere {name} dalla rosa del torneo?",
+    "cancelBtn": "Annulla",
+    "removeBtn": "Rimuovi"
   },
   "tournamentCard": {
     "majorChampionship": "Campionato Maggiore",

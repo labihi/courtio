@@ -243,4 +243,51 @@ export class RegistrationsService {
     if (!reg) throw new NotFoundException('Registration not found');
     return reg;
   }
+
+  async getTeamRegistrations(teamId: string): Promise<RegistrationDocument[]> {
+    return this.regModel
+      .find({
+        team: new Types.ObjectId(teamId),
+        type: RegistrationType.TEAM,
+        status: { $ne: RegistrationStatus.CANCELLED },
+      })
+      .populate('tournament', 'name dateTime status')
+      .populate('roster', 'firstName lastName avatar')
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
+  async updateRoster(
+    registrationId: string,
+    roster: string[],
+    requesterId: string,
+  ): Promise<RegistrationDocument> {
+    const reg = await this.regModel
+      .findById(registrationId)
+      .populate({ path: 'team', populate: [{ path: 'members.user' }, { path: 'captain' }] });
+    if (!reg) throw new NotFoundException('Registration not found');
+
+    const team = reg.team as any;
+    if (team.captain._id.toString() !== requesterId) {
+      throw new BadRequestException('Only the captain can update the tournament roster');
+    }
+
+    const teamMemberIds = new Set(
+      team.members.map((m: any) => (m.user._id ?? m.user).toString()),
+    );
+    for (const playerId of roster) {
+      if (!teamMemberIds.has(playerId)) {
+        throw new BadRequestException(`Player ${playerId} is not a member of this team`);
+      }
+    }
+
+    reg.roster = roster.map((id) => new Types.ObjectId(id));
+    await reg.save();
+
+    return this.regModel
+      .findById(registrationId)
+      .populate('tournament', 'name dateTime status')
+      .populate('roster', 'firstName lastName avatar')
+      .exec() as Promise<RegistrationDocument>;
+  }
 }

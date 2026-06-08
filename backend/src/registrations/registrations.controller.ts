@@ -77,4 +77,18 @@ export class RegistrationsController {
   ) {
     return this.registrationsService.updateStatus(id, status);
   }
+
+  @Get('team/:teamId')
+  getTeamRegistrations(@Param('teamId') teamId: string) {
+    return this.registrationsService.getTeamRegistrations(teamId);
+  }
+
+  @Patch(':id/roster')
+  updateRoster(
+    @Param('id') id: string,
+    @Body('roster') roster: string[],
+    @CurrentUser() user: UserDocument,
+  ) {
+    return this.registrationsService.updateRoster(id, roster, user._id.toString());
+  }
 }

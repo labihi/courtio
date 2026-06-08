@@ -13,7 +13,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { teamApi, userApi } from '@/lib/api';
+import { teamApi, userApi, registrationApi } from '@/lib/api';
+import { TournamentRegInfo } from '@/components/roster/tactical-view';
 import { Team, User, VolleyballRole, ROLE_LABELS } from '@/types';
 
 function RosterPageContent() {
@@ -40,16 +41,44 @@ function RosterPageContent() {
   const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedRole, setSelectedRole] = useState<VolleyballRole | ''>('');
   const [recruitRole, setRecruitRole] = useState<VolleyballRole | null>(null);
+  const [tournamentRegistrations, setTournamentRegistrations] = useState<TournamentRegInfo[]>([]);
+
+  const loadRegistrations = async (teamId: string) => {
+    try {
+      const res = await registrationApi.getTeamRegistrations(teamId);
+      setTournamentRegistrations(
+        res.data
+          .filter((reg: any) => {
+            const trn = reg.tournament;
+            return typeof trn === 'object' && trn.status !== 'COMPLETED' && trn.status !== 'CANCELLED';
+          })
+          .map((reg: any) => {
+            const rosterUsers = reg.roster ?? [];
+            return {
+              registrationId: String(reg._id),
+              tournamentName: reg.tournament?.name ?? '',
+              tournamentDate: reg.tournament?.dateTime ?? '',
+              roster: rosterUsers,
+              rosterIds: rosterUsers.map((u: any) => String(u._id ?? u)),
+            };
+          }),
+      );
+    } catch {
+      setTournamentRegistrations([]);
+    }
+  };
 
   useEffect(() => {
     const preferredId = searchParams.get('teamId');
     Promise.all([
-      teamApi.getMine().then((res) => {
+      teamApi.getMine().then(async (res) => {
         const teams: Team[] = res.data;
         setAllTeams(teams);
         if (teams.length > 0) {
           const preferred = preferredId ? teams.find((t) => t._id === preferredId) : null;
-          setTeam(preferred ?? teams[0]);
+          const active = preferred ?? teams[0];
+          setTeam(active);
+          await loadRegistrations(active._id);
         }
       }),
       userApi.getMe().then((res) => setCurrentUser(res.data)),
@@ -110,6 +139,18 @@ function RosterPageContent() {
     setTransferTargetId('');
   };
 
+  const handleRosterChange = async (registrationId: string, newRosterIds: string[]) => {
+    const res = await registrationApi.updateRoster(registrationId, newRosterIds);
+    const rosterUsers = res.data.roster ?? [];
+    setTournamentRegistrations((prev) =>
+      prev.map((reg) =>
+        reg.registrationId === registrationId
+          ? { ...reg, roster: rosterUsers, rosterIds: rosterUsers.map((u: any) => String(u._id ?? u)) }
+          : reg,
+      ),
+    );
+  };
+
   const handleRecruitSlot = (role: VolleyballRole) => {
     setRecruitRole(role);
     setSelectedRole(role);
@@ -138,7 +179,14 @@ function RosterPageContent() {
 
       <div className="px-4 pt-4 safe-pb space-y-4">
         {allTeams.length > 1 && team && (
-          <Select value={team._id} onValueChange={(id) => setTeam(allTeams.find((t) => t._id === id) ?? team)}>
+          <Select
+            value={team._id}
+            onValueChange={(id) => {
+              const next = allTeams.find((t) => t._id === id) ?? team;
+              setTeam(next);
+              loadRegistrations(next._id);
+            }}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -170,7 +218,12 @@ function RosterPageContent() {
               </Badge>
             </div>
 
-            <TacticalView team={team} onRecruitSlot={handleRecruitSlot} />
+            <TacticalView
+              team={team}
+              onRecruitSlot={handleRecruitSlot}
+              tournamentRegistrations={tournamentRegistrations}
+              onRosterChange={handleRosterChange}
+            />
 
             {/* Team Directory */}
             <div className="rounded-xl border border-border bg-card overflow-hidden">
